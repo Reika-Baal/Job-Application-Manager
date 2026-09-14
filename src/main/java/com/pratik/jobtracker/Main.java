@@ -3,6 +3,7 @@ package com.pratik.jobtracker;
 import com.pratik.jobtracker.database.Database;
 import com.pratik.jobtracker.model.ApplicationStatus;
 import com.pratik.jobtracker.model.JobApplication;
+import com.pratik.jobtracker.database.JobApplicationSNL;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,11 @@ public class Main {
                 ApplicationStatus.APPLIED,
                 "Graduate Software Eng with training."
         );
-        System.out.println(application);
+
+        JobApplicationSNL snl = new JobApplicationSNL();
+
+        snl.insert(application);
+
+        System.out.println("Saved application with ID: " + application.getId());
     }
 }
