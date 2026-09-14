@@ -45,7 +45,7 @@ public class JobApplicationSNL {
         }
     }
 
-    public List<JobApplication> finalAll() {
+    public List<JobApplication> findAll() {
         List<JobApplication> applications = new ArrayList<>();
 
         String sql = """
