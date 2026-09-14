@@ -7,6 +7,8 @@ import com.pratik.jobtracker.database.JobApplicationSNL;
 
 import java.time.LocalDate;
 
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -28,5 +30,11 @@ public class Main {
         snl.insert(application);
 
         System.out.println("Saved application with ID: " + application.getId());
+
+        List<JobApplication> applications = snl.findAll();
+
+        for (JobApplication app : applications) {
+            System.out.println(app);
+        }
     }
 }
