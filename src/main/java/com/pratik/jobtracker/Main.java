@@ -36,5 +36,12 @@ public class Main {
         for (JobApplication app : applications) {
             System.out.println(app);
         }
+
+        application.setStatus(ApplicationStatus.INTERVIEW);
+
+        snl.update(application);
+
+        System.out.println("Updated Application");
+        System.out.println(application);
     }
 }
