@@ -112,4 +112,41 @@ public class JobApplicationSNL {
             e.printStackTrace();
         }
     }
+
+    public JobApplication findById(int id) {
+        String sql = """
+                SELECT *
+                FROM applications
+                WHERE id = ?
+                """;
+
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setInt(1, id);
+
+            ResultSet results = statement.executeQuery();
+
+            if (results.next()) {
+                JobApplication application = new JobApplication(
+                        results.getString("company"),
+                        results.getString("role"),
+                        results.getDouble("salary"),
+                        results.getString("location"),
+                        LocalDate.parse(results.getString("application_date")),
+                        ApplicationStatus.valueOf(results.getString("status")),
+                        results.getString("job_description")
+                );
+
+                application.setId(results.getInt("id"));
+
+                return application;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return  null;
+    }
 }

@@ -37,11 +37,13 @@ public class Main {
             System.out.println(app);
         }
 
-        application.setStatus(ApplicationStatus.INTERVIEW);
+        JobApplication applicationToUpdate = snl.findById(2);
+            if (application != null) {
+                application.setStatus(ApplicationStatus.INTERVIEW);
+                snl.update(application);
 
-        snl.update(application);
-
-        System.out.println("Updated Application");
-        System.out.println(application);
+                System.out.println("Updated Application");
+                System.out.println(applicationToUpdate);
+            }
     }
 }
