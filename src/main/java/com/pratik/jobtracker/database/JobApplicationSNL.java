@@ -79,4 +79,37 @@ public class JobApplicationSNL {
         }
         return applications;
     }
+
+    public void update(JobApplication application) {
+        String sql = """
+                UPDATE applications
+                SET company = ?,
+                    role = ?,
+                    salary = ?,
+                    location = ?,
+                    application_date = ?,
+                    status = ?,
+                    job_description = ?
+                WHERE id = ?
+                """;
+
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, application.getCompany());
+            statement.setString(2, application.getRole());
+            statement.setDouble(3, application.getSalary());
+            statement.setString(4, application.getLocation());
+            statement.setString(5, application.getApplicationDate().toString());
+            statement.setString(6, application.getStatus().name());
+            statement.setString(7, application.getJobDescription());
+            statement.setInt(8, application.getId());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
