@@ -31,6 +31,18 @@ public class Main {
 //
 //        System.out.println("Saved application with ID: " + application.getId());
 
+        JobApplication badApplication = new JobApplication(
+                "s",
+                "Software Engineer",
+                30000,
+                "London",
+                LocalDate.now(),
+                ApplicationStatus.APPLIED,
+                "Test"
+        );
+
+        service.addApplication(badApplication);
+
         // update ID test
         int idToUpdate = 6;
 
