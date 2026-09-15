@@ -1,7 +1,7 @@
 package com.pratik.jobtracker;
 
 import com.pratik.jobtracker.database.Database;
-import com.pratik.jobtracker.database.JobApplicationSNL;
+import com.pratik.jobtracker.service.ApplicationService;
 import com.pratik.jobtracker.model.ApplicationStatus;
 import com.pratik.jobtracker.model.JobApplication;
 
@@ -14,33 +14,33 @@ public class Main {
 
         Database.initialiseDatabase();
 
-        JobApplicationSNL snl = new JobApplicationSNL();
-
-        // create entry test
-        JobApplication application = new JobApplication(
-                "Test Job App",
-                "Graduate Software Eng",
-                30000,
-                "London",
-                LocalDate.now(),
-                ApplicationStatus.APPLIED,
-                "Graduate Software Eng with training."
-        );
-
-        snl.insert(application);
-
-        System.out.println("Saved application with ID: " + application.getId());
+        ApplicationService service = new ApplicationService();
+//
+//        // create entry test
+//        JobApplication application = new JobApplication(
+//                "Test Job App",
+//                "Graduate Software Eng",
+//                30000,
+//                "London",
+//                LocalDate.now(),
+//                ApplicationStatus.APPLIED,
+//                "Graduate Software Eng with training."
+//        );
+//
+//        service.addApplication(application);
+//
+//        System.out.println("Saved application with ID: " + application.getId());
 
         // update ID test
         int idToUpdate = 6;
 
-        JobApplication applicationToUpdate = snl.findById(idToUpdate);
+        JobApplication applicationToUpdate = service.getApplicationById(idToUpdate);
 
         if (applicationToUpdate != null) {
 
             applicationToUpdate.setStatus(ApplicationStatus.INTERVIEW);
 
-            boolean updated = snl.update(applicationToUpdate);
+            boolean updated = service.updateApplication(applicationToUpdate);
 
             if (updated) {
                 System.out.println("Application updated successfully:");
@@ -54,13 +54,13 @@ public class Main {
         }
 
         // delete ID test
-        int idToDelete = 5;
+        int idToDelete =4;
 
-        JobApplication applicationToDelete = snl.findById(idToDelete);
+        JobApplication applicationToDelete = service.getApplicationById(idToDelete);
 
         if (applicationToDelete != null) {
 
-            boolean deleted = snl.delete(idToDelete);
+            boolean deleted = service.deleteApplication(idToDelete);
 
             if (deleted) {
                 System.out.println("Application deleted successfully:");
@@ -76,7 +76,7 @@ public class Main {
 
         System.out.println("\nAll applications:");
 
-        List<JobApplication> applications = snl.findAll();
+        List<JobApplication> applications = service.getAllApplications();
 
         for (JobApplication app : applications) {
             System.out.println(app);
