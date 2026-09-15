@@ -80,7 +80,7 @@ public class JobApplicationSNL {
         return applications;
     }
 
-    public void update(JobApplication application) {
+    public boolean update(JobApplication application) {
         String sql = """
                 UPDATE applications
                 SET company = ?,
@@ -106,10 +106,11 @@ public class JobApplicationSNL {
             statement.setString(7, application.getJobDescription());
             statement.setInt(8, application.getId());
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -148,5 +149,24 @@ public class JobApplicationSNL {
         }
 
         return  null;
+    }
+    public boolean delete(int id) {
+        String sql = """
+                DELETE FROM applications
+                WHERE id = ?
+                """;
+
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setInt(1,id);
+
+            return statement.executeUpdate() >0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
