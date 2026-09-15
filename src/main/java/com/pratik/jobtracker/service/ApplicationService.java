@@ -19,10 +19,6 @@ public class ApplicationService {
 
         }
 
-        if (application.getId() <= 0) {
-            throw new IllegalArgumentException("Application ID but be 1+.");
-        }
-
         if (application.getCompany() == null || application.getCompany().isBlank()) {
             throw new IllegalArgumentException("Company can not be empty.");
 
