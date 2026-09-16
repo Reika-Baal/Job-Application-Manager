@@ -1,117 +1,31 @@
 package com.pratik.jobtracker;
 
 import com.pratik.jobtracker.database.Database;
-import com.pratik.jobtracker.service.ApplicationService;
-import com.pratik.jobtracker.model.ApplicationStatus;
-import com.pratik.jobtracker.model.JobApplication;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-import java.time.LocalDate;
-import java.util.List;
+public class Main extends Application {
 
-public class Main {
-
-    public static void main(String[] args) {
+    @Override
+    public void start(Stage stage) {
 
         Database.initialiseDatabase();
 
-        ApplicationService service = new ApplicationService();
-//
-//        // create entry test
-//        JobApplication application = new JobApplication(
-//                "Test Job App",
-//                "Graduate Software Eng",
-//                30000,
-//                "London",
-//                LocalDate.now(),
-//                ApplicationStatus.APPLIED,
-//                "Graduate Software Eng with training."
-//        );
-//
-//        service.addApplication(application);
-//
-//        System.out.println("Saved application with ID: " + application.getId());
+        Label title = new Label("Job Application Manager");
 
-//        // create bad entry
-//        JobApplication badApplication = new JobApplication(
-//                "",
-//                "Software Engineer",
-//                30000,
-//                "London",
-//                LocalDate.now(),
-//                ApplicationStatus.APPLIED,
-//                "Test"
-//        );
-//
-//        service.addApplication(badApplication);
+        VBox root = new VBox(title);
 
-        // update ID test
-        int idToUpdate = 6;
+        Scene scene = new Scene(root, 900, 600);
 
-        JobApplication applicationToUpdate = service.getApplicationById(idToUpdate);
+        stage.setTitle("Job Application Manager");
+        stage.setScene(scene);
+        stage.show();
+    }
 
-        if (applicationToUpdate != null) {
-
-            applicationToUpdate.setStatus(ApplicationStatus.INTERVIEW);
-
-            boolean updated = service.updateApplication(applicationToUpdate);
-
-            if (updated) {
-                System.out.println("Application updated successfully:");
-                System.out.println(applicationToUpdate);
-            } else {
-                System.out.println("Application could not be updated.");
-            }
-
-        } else {
-            System.out.println("Application with ID " + idToUpdate + " was not found.");
-        }
-
-        // delete ID test
-        int idToDelete =4;
-
-        JobApplication applicationToDelete = service.getApplicationById(idToDelete);
-
-        if (applicationToDelete != null) {
-
-            boolean deleted = service.deleteApplication(idToDelete);
-
-            if (deleted) {
-                System.out.println("Application deleted successfully:");
-                System.out.println(applicationToDelete);
-            } else {
-                System.out.println("Application could not be deleted.");
-            }
-
-        } else {
-            System.out.println("Application with ID " + idToDelete + " was not found.");
-        }
-
-        // all applications
-        System.out.println("\nAll applications:");
-
-        List<JobApplication> applications = service.getAllApplications();
-
-        // test for search company feature
-        for (JobApplication app : applications) {
-            System.out.println(app);
-        }
-
-        System.out.println("\nSearch by company:");
-
-        List<JobApplication> companyResults =
-                service.searchByCompany("s");
-
-        for (JobApplication app : companyResults) {
-            System.out.println(app);
-        }
-
-        // total Applications
-        System.out.println("Total applications: " + service.getTotalApplications());
-
-        // search for Applied
-        System.out.println(
-                "Applied: " +
-                        service.countByStatus(ApplicationStatus.APPLIED)
-        );
+    public static void main(String[] args) {
+        launch(args);
     }
 }
