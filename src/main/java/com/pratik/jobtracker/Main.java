@@ -1,13 +1,22 @@
 package com.pratik.jobtracker;
 
 import com.pratik.jobtracker.database.Database;
+import com.pratik.jobtracker.model.JobApplication;
+import com.pratik.jobtracker.service.ApplicationService;
+
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+    private final ApplicationService service = new ApplicationService();
 
     @Override
     public void start(Stage stage) {
@@ -16,7 +25,88 @@ public class Main extends Application {
 
         Label title = new Label("Job Application Manager");
 
-        VBox root = new VBox(title);
+        TableView<JobApplication> table = new TableView<>();
+
+        TableColumn<JobApplication, String> companyColumn =
+                new TableColumn<>("Company");
+
+        companyColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getCompany()
+                )
+        );
+
+        TableColumn<JobApplication, String> roleColumn =
+                new TableColumn<>("Role");
+
+        roleColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getRole()
+                )
+        );
+
+        TableColumn<JobApplication, String> salaryColumn =
+                new TableColumn<>("Salary");
+
+        salaryColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        String.valueOf(data.getValue().getSalary())
+                )
+        );
+
+        TableColumn<JobApplication, String> locationColumn =
+                new TableColumn<>("Location");
+
+        locationColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getLocation()
+                )
+        );
+
+        TableColumn<JobApplication, String> dateColumn =
+                new TableColumn<>("Date Applied");
+
+        dateColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getApplicationDate().toString()
+                )
+        );
+
+        TableColumn<JobApplication, String> statusColumn =
+                new TableColumn<>("Status");
+
+        statusColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getStatus().toString()
+                )
+        );
+
+        table.getColumns().addAll(
+                companyColumn,
+                roleColumn,
+                salaryColumn,
+                locationColumn,
+                dateColumn,
+                statusColumn
+        );
+
+        ObservableList<JobApplication> applications =
+                FXCollections.observableArrayList(
+                        service.getAllApplications()
+                );
+
+        table.setItems(applications);
+
+        Button addButton = new Button("Add Application");
+
+        HBox buttonBar = new HBox(10, addButton);
+
+        VBox topSection = new VBox(10, title, buttonBar);
+
+        BorderPane root = new BorderPane();
+
+        root.setTop(topSection);
+        root.setCenter(table);
 
         Scene scene = new Scene(root, 900, 600);
 
