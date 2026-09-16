@@ -1,9 +1,13 @@
 package com.pratik.jobtracker;
 
+import java.util.List;
+
 import com.pratik.jobtracker.database.Database;
 import com.pratik.jobtracker.model.JobApplication;
 import com.pratik.jobtracker.service.ApplicationService;
 import com.pratik.jobtracker.ui.AddApplicationView;
+import com.pratik.jobtracker.ui.EditApplicationView;
+import com.pratik.jobtracker.model.ApplicationStatus;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -98,6 +102,35 @@ public class Main extends Application {
 
         table.setItems(applications);
 
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search company or location...");
+
+        ComboBox<String> statusFilter = new ComboBox<>();
+
+        statusFilter.getItems().add("All Statuses");
+
+        for (ApplicationStatus status : ApplicationStatus.values()) {
+            statusFilter.getItems().add(status.name());
+        }
+
+        statusFilter.setValue("All Statuses");
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            applyFilters(
+                    applications,
+                    newValue,
+                    statusFilter.getValue()
+            );
+        });
+
+        statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            applyFilters(
+                    applications,
+                    searchField.getText(),
+                    newValue
+            );
+        });
+
         Button addButton = new Button("Add Application");
 
         Button editButton = new Button("Edit Application");
@@ -114,7 +147,7 @@ public class Main extends Application {
         descriptionArea.setWrapText(true);
         descriptionArea.setPromptText("Job description");
 
-        descriptionArea.setPrefColumnCount(5);
+        descriptionArea.setPrefRowCount(5);
 
 
         addButton.setOnAction(event -> {
@@ -170,6 +203,25 @@ public class Main extends Application {
             });
         });
 
+        editButton.setOnAction(event -> {
+
+            JobApplication selectedApplication =
+                    table.getSelectionModel().getSelectedItem();
+
+            if (selectedApplication == null) {
+                return;
+            }
+
+            EditApplicationView editView =
+                    new EditApplicationView(
+                            service,
+                            selectedApplication,
+                            () -> refreshTable(applications)
+                    );
+
+            editView.show();
+        });
+
         table.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldSelection, newSelection) -> {
@@ -201,16 +253,15 @@ public class Main extends Application {
 
         HBox buttonBar = new HBox(10, addButton, editButton, deleteButton);
 
-        VBox topSection = new VBox(10, title, buttonBar);
+        HBox filterBar = new HBox(10, searchField, statusFilter);
+
+        VBox topSection = new VBox(10, title, buttonBar, filterBar);
 
         BorderPane root = new BorderPane();
 
         root.setTop(topSection);
 
-        VBox centreSection = new VBox(
-                10,
-                table,
-                selectedCompany,
+        VBox centreSection = new VBox(10, table, selectedCompany,
                 new Label("Job Description"),
                 descriptionArea
         );
@@ -228,6 +279,36 @@ public class Main extends Application {
             ObservableList<JobApplication> applications
     ) {
         applications.setAll(service.getAllApplications());
+    }
+
+    private void applyFilters(
+            ObservableList<JobApplication> applications,
+            String searchText,
+            String statusText
+    ) {
+        List<JobApplication> results = service.getAllApplications();
+
+        if (searchText != null && !searchText.isBlank()) {
+            String query = searchText.toLowerCase();
+
+            results = results.stream()
+                    .filter(app ->
+                            app.getCompany().toLowerCase().contains(query)
+                                    || app.getLocation().toLowerCase().contains(query)
+                    )
+                    .toList();
+        }
+
+        if (statusText != null && !statusText.equals("All Statuses")) {
+            ApplicationStatus status =
+                    ApplicationStatus.valueOf(statusText);
+
+            results = results.stream()
+                    .filter(app -> app.getStatus() == status)
+                    .toList();
+        }
+
+        applications.setAll(results);
     }
 
     public static void main(String[] args) {
