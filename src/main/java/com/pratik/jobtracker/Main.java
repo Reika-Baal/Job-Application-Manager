@@ -140,7 +140,24 @@ public class Main extends Application {
         editButton.setDisable(true);
         deleteButton.setDisable(true);
 
-        Label selectedCompany = new Label("Select an application to view details");
+        Label selectedCompany =
+                new Label("Select an application to view details");
+
+        Label totalLabel = new Label();
+        Label appliedLabel = new Label();
+        Label onlineTestLabel = new Label();
+        Label interviewLabel = new Label();
+        Label offerLabel = new Label();
+        Label rejectedLabel = new Label();
+
+        refreshStatistics(
+                totalLabel,
+                appliedLabel,
+                onlineTestLabel,
+                interviewLabel,
+                offerLabel,
+                rejectedLabel
+        );
 
         TextArea descriptionArea = new TextArea();
         descriptionArea.setEditable(false);
@@ -149,15 +166,25 @@ public class Main extends Application {
 
         descriptionArea.setPrefRowCount(5);
 
-
         addButton.setOnAction(event -> {
             AddApplicationView addView = new AddApplicationView(
                     service,
-                    () -> refreshTable(
-                            applications,
-                            searchField.getText(),
-                            statusFilter.getValue()
-                    )
+                    () -> {
+                        refreshTable(
+                                applications,
+                                searchField.getText(),
+                                statusFilter.getValue()
+                        );
+
+                        refreshStatistics(
+                                totalLabel,
+                                appliedLabel,
+                                onlineTestLabel,
+                                interviewLabel,
+                                offerLabel,
+                                rejectedLabel
+                        );
+                    }
             );
 
             addView.show();
@@ -177,6 +204,7 @@ public class Main extends Application {
             );
 
             confirmation.setTitle("Delete Application");
+
             confirmation.setHeaderText(
                     "Delete " + selectedApplication.getCompany() + "?"
             );
@@ -199,6 +227,15 @@ public class Main extends Application {
                                 applications,
                                 searchField.getText(),
                                 statusFilter.getValue()
+                        );
+
+                        refreshStatistics(
+                                totalLabel,
+                                appliedLabel,
+                                onlineTestLabel,
+                                interviewLabel,
+                                offerLabel,
+                                rejectedLabel
                         );
 
                         selectedCompany.setText(
@@ -224,11 +261,22 @@ public class Main extends Application {
                     new EditApplicationView(
                             service,
                             selectedApplication,
-                            () -> refreshTable(
-                                    applications,
-                                    searchField.getText(),
-                                    statusFilter.getValue()
-                            )
+                            () -> {
+                                refreshTable(
+                                        applications,
+                                        searchField.getText(),
+                                        statusFilter.getValue()
+                                );
+
+                                refreshStatistics(
+                                        totalLabel,
+                                        appliedLabel,
+                                        onlineTestLabel,
+                                        interviewLabel,
+                                        offerLabel,
+                                        rejectedLabel
+                                );
+                            }
                     );
 
             editView.show();
@@ -253,13 +301,13 @@ public class Main extends Application {
                         descriptionArea.setText(
                                 newSelection.getJobDescription()
                         );
+
                     } else {
                         selectedCompany.setText(
                                 "Select an application to view details"
                         );
 
                         descriptionArea.clear();
-
                     }
                 });
 
@@ -267,13 +315,26 @@ public class Main extends Application {
 
         HBox filterBar = new HBox(10, searchField, statusFilter);
 
-        VBox topSection = new VBox(10, title, buttonBar, filterBar);
+        HBox statisticsBar = new HBox(
+                15,
+                totalLabel,
+                appliedLabel,
+                onlineTestLabel,
+                interviewLabel,
+                offerLabel,
+                rejectedLabel
+        );
+
+        VBox topSection = new VBox(10, title, statisticsBar, buttonBar, filterBar);
 
         BorderPane root = new BorderPane();
 
         root.setTop(topSection);
 
-        VBox centreSection = new VBox(10, table, selectedCompany,
+        VBox centreSection = new VBox(
+                10,
+                table,
+                selectedCompany,
                 new Label("Job Description"),
                 descriptionArea
         );
@@ -292,11 +353,29 @@ public class Main extends Application {
             String searchText,
             String statusText
     ) {
-        applyFilters(
-                applications,
-                searchText,
-                statusText
-        );
+        applyFilters(applications, searchText, statusText);
+    }
+
+    private void refreshStatistics(
+            Label totalLabel,
+            Label appliedLabel,
+            Label onlineTestLabel,
+            Label interviewLabel,
+            Label offerLabel,
+            Label rejectedLabel
+    ) {
+
+        totalLabel.setText("Total Applications: " + service.getTotalApplications());
+
+        appliedLabel.setText("Applied: " + service.countByStatus(ApplicationStatus.APPLIED));
+
+        onlineTestLabel.setText("Online Test: " + service.countByStatus(ApplicationStatus.ONLINE_TEST));
+
+        interviewLabel.setText("Interview: " + service.countByStatus(ApplicationStatus.INTERVIEW));
+
+        offerLabel.setText("Offer: " + service.countByStatus(ApplicationStatus.OFFER));
+
+        rejectedLabel.setText("Rejected: " + service.countByStatus(ApplicationStatus.REJECTED));
     }
 
     private void applyFilters(
@@ -312,17 +391,21 @@ public class Main extends Application {
             results = results.stream()
                     .filter(app ->
                             app.getCompany().toLowerCase().contains(query)
-                                    || app.getLocation().toLowerCase().contains(query)
+                                    || app.getLocation()
+                                    .toLowerCase()
+                                    .contains(query)
                     )
                     .toList();
         }
 
         if (statusText != null && !statusText.equals("All Statuses")) {
-            ApplicationStatus status =
-                    ApplicationStatus.valueOf(statusText);
+
+            ApplicationStatus status = ApplicationStatus.valueOf(statusText);
 
             results = results.stream()
-                    .filter(app -> app.getStatus() == status)
+                    .filter(app ->
+                            app.getStatus() == status
+                    )
                     .toList();
         }
 
