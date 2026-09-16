@@ -109,6 +109,32 @@ public class Main extends Application {
             addView.show();
         });
 
+        Label selectedCompany = new Label("Select an application to view details");
+
+        TextArea descriptionArea = new TextArea();
+        descriptionArea.setEditable(false);
+        descriptionArea.setWrapText(true);
+        descriptionArea.setPromptText("Job description");
+
+        descriptionArea.setPrefColumnCount(5);
+
+        table.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldSelection, newSelection) -> {
+
+                    if (newSelection != null) {
+                        selectedCompany.setText(
+                                newSelection.getCompany() +
+                                        " - " +
+                                        newSelection.getRole()
+                        );
+
+                        descriptionArea.setText(
+                                newSelection.getJobDescription()
+                        );
+                    }
+                });
+
         HBox buttonBar = new HBox(10, addButton);
 
         VBox topSection = new VBox(10, title, buttonBar);
@@ -116,7 +142,16 @@ public class Main extends Application {
         BorderPane root = new BorderPane();
 
         root.setTop(topSection);
-        root.setCenter(table);
+
+        VBox centreSection = new VBox(
+                10,
+                table,
+                selectedCompany,
+                new Label("Job Description"),
+                descriptionArea
+        );
+
+        root.setCenter(centreSection);
 
         Scene scene = new Scene(root, 900, 600);
 
