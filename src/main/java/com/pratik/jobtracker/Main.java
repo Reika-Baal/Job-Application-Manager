@@ -86,7 +86,7 @@ public class Main {
             System.out.println("Application with ID " + idToDelete + " was not found.");
         }
 
-
+        // all applications
         System.out.println("\nAll applications:");
 
         List<JobApplication> applications = service.getAllApplications();
@@ -99,10 +99,19 @@ public class Main {
         System.out.println("\nSearch by company:");
 
         List<JobApplication> companyResults =
-                service.searchByCompany("test");
+                service.searchByCompany("s");
 
         for (JobApplication app : companyResults) {
             System.out.println(app);
         }
+
+        // total Applications
+        System.out.println("Total applications: " + service.getTotalApplications());
+
+        // search for Applied
+        System.out.println(
+                "Applied: " +
+                        service.countByStatus(ApplicationStatus.APPLIED)
+        );
     }
 }
