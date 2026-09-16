@@ -109,6 +109,57 @@ public class Main extends Application {
             addView.show();
         });
 
+        Button editButton = new Button("Edit Application");
+
+        Button deleteButton = new Button("Delete Application");
+
+        deleteButton.setOnAction(event -> {
+
+            JobApplication selectedApplication =
+                    table.getSelectionModel().getSelectedItem();
+
+            if (selectedApplication == null) {
+                return;
+            }
+
+            Alert confirmation = new Alert(
+                    Alert.AlertType.CONFIRMATION
+            );
+
+            confirmation.setTitle("Delete Application");
+            confirmation.setHeaderText(
+                    "Delete " + selectedApplication.getCompany() + "?"
+            );
+
+            confirmation.setContentText(
+                    "This action cannot be undone."
+            );
+
+            confirmation.showAndWait().ifPresent(response -> {
+
+                if (response == ButtonType.OK) {
+
+                    boolean deleted =
+                            service.deleteApplication(
+                                    selectedApplication.getId()
+                            );
+
+                    if (deleted) {
+                        refreshTable(applications);
+
+                        selectedCompany.setText(
+                                "Select an application to view details"
+                        );
+
+                        descriptionArea.clear();
+                    }
+                }
+            });
+        });
+
+        editButton.setDisable(true);
+        deleteButton.setDisable(true);
+
         Label selectedCompany = new Label("Select an application to view details");
 
         TextArea descriptionArea = new TextArea();
@@ -122,6 +173,11 @@ public class Main extends Application {
                 .selectedItemProperty()
                 .addListener((observable, oldSelection, newSelection) -> {
 
+                    boolean nothingSelected = newSelection == null;
+
+                    editButton.setDisable(nothingSelected);
+                    deleteButton.setDisable(nothingSelected);
+
                     if (newSelection != null) {
                         selectedCompany.setText(
                                 newSelection.getCompany() +
@@ -132,10 +188,17 @@ public class Main extends Application {
                         descriptionArea.setText(
                                 newSelection.getJobDescription()
                         );
+                    } else {
+                        selectedCompany.setText(
+                                "Select an application to view details"
+                        );
+
+                        descriptionArea.clear();
+
                     }
                 });
 
-        HBox buttonBar = new HBox(10, addButton);
+        HBox buttonBar = new HBox(10, addButton, editButton, deleteButton);
 
         VBox topSection = new VBox(10, title, buttonBar);
 
