@@ -99,7 +99,7 @@ public class Main {
         System.out.println("\nSearch by company:");
 
         List<JobApplication> companyResults =
-                service.searchByCompany("s");
+                service.searchByCompany("test");
 
         for (JobApplication app : companyResults) {
             System.out.println(app);

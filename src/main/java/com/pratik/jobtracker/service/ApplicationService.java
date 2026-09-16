@@ -90,29 +90,68 @@ public class ApplicationService {
 
     // search company
     public List<JobApplication> searchByCompany(String company) {
-        return snl.findAll()
+
+        if (company == null || company.isBlank()) {
+            throw new IllegalArgumentException("Company search can not be empty.");
+        }
+        List<JobApplication> results =  snl.findAll()
                 .stream()
                 .filter(app -> app.getCompany()
                         .toLowerCase()
                         .contains(company.toLowerCase()))
                 .toList();
+
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Company '" + company + "' was not found."
+            );
+        }
+
+        return results;
+
     }
 
     // search role
     public List<JobApplication> searchByRole(String role) {
-        return snl.findAll()
+
+        if (role == null || role.isBlank()) {
+            throw new IllegalArgumentException("Role search can not be empty.");
+        }
+        List<JobApplication> results =  snl.findAll()
                 .stream()
                 .filter(app -> app.getRole()
                         .toLowerCase()
                         .contains(role.toLowerCase()))
                 .toList();
+
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "role '" + role + "' was not found."
+            );
+        }
+
+        return results;
+
     }
 
     // search status
     public List<JobApplication> filterByStatus(ApplicationStatus status) {
-        return snl.findAll()
+
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be empty.");
+        }
+
+        List<JobApplication> results = snl.findAll()
                 .stream()
                 .filter(app -> app.getStatus() == status)
                 .toList();
+
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No applications found with status: " + status
+            );
+        }
+
+        return results;
     }
 }
