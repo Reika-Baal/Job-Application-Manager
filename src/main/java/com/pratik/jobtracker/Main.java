@@ -91,7 +91,17 @@ public class Main {
 
         List<JobApplication> applications = service.getAllApplications();
 
+        // test for search company feature
         for (JobApplication app : applications) {
+            System.out.println(app);
+        }
+
+        System.out.println("\nSearch by company:");
+
+        List<JobApplication> companyResults =
+                service.searchByCompany("s");
+
+        for (JobApplication app : companyResults) {
             System.out.println(app);
         }
     }

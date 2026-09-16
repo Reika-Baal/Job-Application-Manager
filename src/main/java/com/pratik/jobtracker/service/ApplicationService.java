@@ -2,6 +2,7 @@ package com.pratik.jobtracker.service;
 
 import com.pratik.jobtracker.model.JobApplication;
 import com.pratik.jobtracker.database.JobApplicationSNL;
+import com.pratik.jobtracker.model.ApplicationStatus;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class ApplicationService {
         }
 
         if (application.getId() <= 0) {
-            throw new IllegalArgumentException("Application ID but be 1+.");
+            throw new IllegalArgumentException("Application ID must be 1+.");
         }
 
         if (application.getCompany() == null || application.getCompany().isBlank()) {
@@ -85,5 +86,33 @@ public class ApplicationService {
         }
 
         return snl.delete(id);
+    }
+
+    // search company
+    public List<JobApplication> searchByCompany(String company) {
+        return snl.findAll()
+                .stream()
+                .filter(app -> app.getCompany()
+                        .toLowerCase()
+                        .contains(company.toLowerCase()))
+                .toList();
+    }
+
+    // search role
+    public List<JobApplication> searchByRole(String role) {
+        return snl.findAll()
+                .stream()
+                .filter(app -> app.getRole()
+                        .toLowerCase()
+                        .contains(role.toLowerCase()))
+                .toList();
+    }
+
+    // search status
+    public List<JobApplication> filterByStatus(ApplicationStatus status) {
+        return snl.findAll()
+                .stream()
+                .filter(app -> app.getStatus() == status)
+                .toList();
     }
 }
