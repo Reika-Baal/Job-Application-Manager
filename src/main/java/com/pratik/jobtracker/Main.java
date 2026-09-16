@@ -101,7 +101,11 @@ public class Main extends Application {
         Button addButton = new Button("Add Application");
 
         addButton.setOnAction(event -> {
-            AddApplicationView addView = new AddApplicationView(service);
+            AddApplicationView addView = new AddApplicationView(
+                    service,
+                    () -> refreshTable(applications)
+            );
+
             addView.show();
         });
 
@@ -119,6 +123,12 @@ public class Main extends Application {
         stage.setTitle("Job Application Manager");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void refreshTable(
+            ObservableList<JobApplication> applications
+    ) {
+        applications.setAll(service.getAllApplications());
     }
 
     public static void main(String[] args) {

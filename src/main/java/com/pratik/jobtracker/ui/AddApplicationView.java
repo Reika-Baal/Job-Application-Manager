@@ -14,9 +14,11 @@ import java.time.LocalDate;
 
 public class AddApplicationView {
     private final ApplicationService service;
+    private final Runnable onApplicationAdded;
 
-    public AddApplicationView(ApplicationService service) {
+    public AddApplicationView(ApplicationService service, Runnable onApplicationAdded) {
         this.service = service;
+        this.onApplicationAdded = onApplicationAdded;
     }
 
     public void show() {
@@ -67,6 +69,8 @@ public class AddApplicationView {
                 );
 
                 service.addApplication(application);
+
+                onApplicationAdded.run();
 
                 stage.close();
 
