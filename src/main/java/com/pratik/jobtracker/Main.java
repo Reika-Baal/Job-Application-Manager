@@ -3,6 +3,7 @@ package com.pratik.jobtracker;
 import com.pratik.jobtracker.database.Database;
 import com.pratik.jobtracker.model.JobApplication;
 import com.pratik.jobtracker.service.ApplicationService;
+import com.pratik.jobtracker.ui.AddApplicationView;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -98,6 +99,11 @@ public class Main extends Application {
         table.setItems(applications);
 
         Button addButton = new Button("Add Application");
+
+        addButton.setOnAction(event -> {
+            AddApplicationView addView = new AddApplicationView(service);
+            addView.show();
+        });
 
         HBox buttonBar = new HBox(10, addButton);
 
