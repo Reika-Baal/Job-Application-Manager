@@ -153,7 +153,11 @@ public class Main extends Application {
         addButton.setOnAction(event -> {
             AddApplicationView addView = new AddApplicationView(
                     service,
-                    () -> refreshTable(applications)
+                    () -> refreshTable(
+                            applications,
+                            searchField.getText(),
+                            statusFilter.getValue()
+                    )
             );
 
             addView.show();
@@ -191,7 +195,11 @@ public class Main extends Application {
                             );
 
                     if (deleted) {
-                        refreshTable(applications);
+                        refreshTable(
+                                applications,
+                                searchField.getText(),
+                                statusFilter.getValue()
+                        );
 
                         selectedCompany.setText(
                                 "Select an application to view details"
@@ -216,7 +224,11 @@ public class Main extends Application {
                     new EditApplicationView(
                             service,
                             selectedApplication,
-                            () -> refreshTable(applications)
+                            () -> refreshTable(
+                                    applications,
+                                    searchField.getText(),
+                                    statusFilter.getValue()
+                            )
                     );
 
             editView.show();
@@ -276,9 +288,15 @@ public class Main extends Application {
     }
 
     private void refreshTable(
-            ObservableList<JobApplication> applications
+            ObservableList<JobApplication> applications,
+            String searchText,
+            String statusText
     ) {
-        applications.setAll(service.getAllApplications());
+        applyFilters(
+                applications,
+                searchText,
+                statusText
+        );
     }
 
     private void applyFilters(
