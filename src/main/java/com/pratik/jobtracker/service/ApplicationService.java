@@ -154,4 +154,43 @@ public class ApplicationService {
 
         return results;
     }
+
+    public int getTotalApplications() {
+        return snl.findAll().size();
+    }
+
+    public long countByStatus(ApplicationStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status can not be null.");
+        }
+
+        return snl.findAll()
+                .stream()
+                .filter(app -> app.getStatus() == status)
+                .count();
+    }
+
+    public double getInterviewRate() {
+        int total = getTotalApplications();
+
+        if (total == 0) {
+            return 0;
+        }
+
+        long interviews = countByStatus(ApplicationStatus.INTERVIEW);
+
+        return (double) interviews / total * 100;
+    }
+
+    public double getOfferRate() {
+        int total = getTotalApplications();
+
+        if (total == 0) {
+            return 0;
+        }
+
+        long offers = countByStatus(ApplicationStatus.OFFER);
+
+        return (double) offers / total * 100;
+    }
 }
