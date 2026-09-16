@@ -100,6 +100,23 @@ public class Main extends Application {
 
         Button addButton = new Button("Add Application");
 
+        Button editButton = new Button("Edit Application");
+
+        Button deleteButton = new Button("Delete Application");
+
+        editButton.setDisable(true);
+        deleteButton.setDisable(true);
+
+        Label selectedCompany = new Label("Select an application to view details");
+
+        TextArea descriptionArea = new TextArea();
+        descriptionArea.setEditable(false);
+        descriptionArea.setWrapText(true);
+        descriptionArea.setPromptText("Job description");
+
+        descriptionArea.setPrefColumnCount(5);
+
+
         addButton.setOnAction(event -> {
             AddApplicationView addView = new AddApplicationView(
                     service,
@@ -108,10 +125,6 @@ public class Main extends Application {
 
             addView.show();
         });
-
-        Button editButton = new Button("Edit Application");
-
-        Button deleteButton = new Button("Delete Application");
 
         deleteButton.setOnAction(event -> {
 
@@ -156,18 +169,6 @@ public class Main extends Application {
                 }
             });
         });
-
-        editButton.setDisable(true);
-        deleteButton.setDisable(true);
-
-        Label selectedCompany = new Label("Select an application to view details");
-
-        TextArea descriptionArea = new TextArea();
-        descriptionArea.setEditable(false);
-        descriptionArea.setWrapText(true);
-        descriptionArea.setPromptText("Job description");
-
-        descriptionArea.setPrefColumnCount(5);
 
         table.getSelectionModel()
                 .selectedItemProperty()
