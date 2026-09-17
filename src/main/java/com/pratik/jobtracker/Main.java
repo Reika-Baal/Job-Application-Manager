@@ -8,6 +8,7 @@ import com.pratik.jobtracker.service.ApplicationService;
 import com.pratik.jobtracker.ui.AddApplicationView;
 import com.pratik.jobtracker.ui.EditApplicationView;
 import com.pratik.jobtracker.model.ApplicationStatus;
+import com.pratik.jobtracker.ui.InterviewManagementView;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -137,8 +138,11 @@ public class Main extends Application {
 
         Button deleteButton = new Button("Delete Application");
 
+        Button interviewButton = new Button("Manage Interviews");
+
         editButton.setDisable(true);
         deleteButton.setDisable(true);
+        interviewButton.setDisable(true);
 
         Label selectedCompany =
                 new Label("Select an application to view details");
@@ -290,6 +294,7 @@ public class Main extends Application {
 
                     editButton.setDisable(nothingSelected);
                     deleteButton.setDisable(nothingSelected);
+                    interviewButton.setDisable(nothingSelected);
 
                     if (newSelection != null) {
                         selectedCompany.setText(
@@ -311,7 +316,7 @@ public class Main extends Application {
                     }
                 });
 
-        HBox buttonBar = new HBox(10, addButton, editButton, deleteButton);
+        HBox buttonBar = new HBox(10, addButton, editButton, deleteButton, interviewButton);
 
         HBox filterBar = new HBox(10, searchField, statusFilter);
 
