@@ -3,6 +3,7 @@ package com.pratik.jobtracker.ui;
 import com.pratik.jobtracker.model.Interview;
 import com.pratik.jobtracker.model.JobApplication;
 import com.pratik.jobtracker.service.InterviewService;
+import com.pratik.jobtracker.ui.AddInterviewView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -93,6 +94,18 @@ public class InterviewManagementView {
                     editButton.setDisable(nothingSelected);
                     deleteButton.setDisable(nothingSelected);
                 });
+
+        addButton.setOnAction(event -> {
+
+            AddInterviewView addView =
+                    new AddInterviewView(
+                            application,
+                            interviewService,
+                            this::refreshInterviews
+                    );
+
+            addView.show();
+        });
 
         TextArea notesArea = new TextArea();
         notesArea.setEditable(false);
