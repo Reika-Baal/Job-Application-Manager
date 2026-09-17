@@ -286,6 +286,23 @@ public class Main extends Application {
             editView.show();
         });
 
+        interviewButton.setOnAction(event -> {
+
+            JobApplication selectedApplication =
+                    table.getSelectionModel().getSelectedItem();
+
+            if (selectedApplication == null) {
+                return;
+            }
+
+            InterviewManagementView interviewView =
+                    new InterviewManagementView(
+                            selectedApplication
+                    );
+
+            interviewView.show();
+        });
+
         table.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldSelection, newSelection) -> {
