@@ -14,7 +14,8 @@ public class Database {
     }
 
     public static void initialiseDatabase() {
-        String sql = """
+
+        String applicationSql = """
                 CREATE TABLE IF NOT EXISTS applications (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     company TEXT NOT NULL,
@@ -27,11 +28,27 @@ public class Database {
                 )
                 """;
 
+        String interviewSql = """
+                CREATE TABLE IF NOT EXISTS interviews (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    application_id INTEGER NOT NULL,
+                    interview_date_time TEXT NOT NULL,
+                    type TEXT,
+                    location TEXT,
+                    notes TEXT,
+                    FOREIGN KEY (application_id)
+                        REFERENCES applications(id)
+                        ON DELETE CASCADE
+                )
+                """;
+
         try (
                 Connection connection = getConnection();
                 Statement statement = connection.createStatement()
         ) {
-            statement.execute(sql);
+            statement.execute(applicationSql);
+            statement.execute(interviewSql);
+
             System.out.println("Database initialised successfully.");
 
         } catch (SQLException e) {
