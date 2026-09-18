@@ -3,6 +3,7 @@ package com.pratik.jobtracker.service;
 import com.pratik.jobtracker.database.InterviewSNL;
 import com.pratik.jobtracker.model.Interview;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class InterviewService {
@@ -79,5 +80,23 @@ public class InterviewService {
         }
 
         return snl.delete(id);
+    }
+
+    public List<Interview> getUpcomingInterviews(int daysAhead) {
+
+        if (daysAhead < 0) {
+            throw new IllegalArgumentException("Days ahead cannot be negative.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime limit = now.plusDays(daysAhead);
+
+        return snl.findAll()
+                .stream()
+                .filter(interview ->
+                        !interview.getInterviewDateTime().isBefore(now)
+                                && !interview.getInterviewDateTime().isAfter(limit)
+                )
+                .toList();
     }
 }

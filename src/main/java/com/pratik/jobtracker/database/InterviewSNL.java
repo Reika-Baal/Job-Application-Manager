@@ -133,4 +133,41 @@ public class InterviewSNL {
             return false;
         }
     }
+
+    public List<Interview> findAll() {
+        List<Interview> interviews = new ArrayList<>();
+
+        String sql = """
+            SELECT *
+            FROM interviews
+            ORDER BY interview_date_time ASC
+            """;
+
+        try (
+                Connection connection = Database.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet results = statement.executeQuery(sql)
+        ) {
+            while (results.next()) {
+                Interview interview = new Interview(
+                        results.getInt("application_id"),
+                        LocalDateTime.parse(
+                                results.getString("interview_date_time")
+                        ),
+                        results.getString("type"),
+                        results.getString("location"),
+                        results.getString("notes")
+                );
+
+                interview.setId(results.getInt("id"));
+
+                interviews.add(interview);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return interviews;
+    }
 }
