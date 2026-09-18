@@ -95,6 +95,11 @@ public class InterviewManagementView {
                     deleteButton.setDisable(nothingSelected);
                 });
 
+        TextArea notesArea = new TextArea();
+        notesArea.setEditable(false);
+        notesArea.setWrapText(true);
+        notesArea.setPromptText("Interview notes");
+
         addButton.setOnAction(event -> {
 
             AddInterviewView addView =
@@ -107,10 +112,59 @@ public class InterviewManagementView {
             addView.show();
         });
 
-        TextArea notesArea = new TextArea();
-        notesArea.setEditable(false);
-        notesArea.setWrapText(true);
-        notesArea.setPromptText("Interview notes");
+        editButton.setOnAction(event -> {
+
+            Interview selectedInterview =
+                    table.getSelectionModel().getSelectedItem();
+
+            if (selectedInterview == null) {
+                return;
+            }
+
+            EditInterviewView editView =
+                    new EditInterviewView(
+                            selectedInterview,
+                            interviewService,
+                            this::refreshInterviews
+                    );
+
+            editView.show();
+        });
+
+        deleteButton.setOnAction(event -> {
+
+            Interview selectedInterview =
+                    table.getSelectionModel().getSelectedItem();
+
+            if (selectedInterview == null) {
+                return;
+            }
+
+            Alert confirmation =
+                    new Alert(Alert.AlertType.CONFIRMATION);
+
+            confirmation.setTitle("Delete Interview");
+            confirmation.setHeaderText("Delete this interview?");
+            confirmation.setContentText(
+                    "This action cannot be undone."
+            );
+
+            confirmation.showAndWait().ifPresent(response -> {
+
+                if (response == ButtonType.OK) {
+
+                    boolean deleted =
+                            interviewService.deleteInterview(
+                                    selectedInterview.getId()
+                            );
+
+                    if (deleted) {
+                        refreshInterviews();
+                        notesArea.clear();
+                    }
+                }
+            });
+        });
 
         table.getSelectionModel()
                 .selectedItemProperty()
