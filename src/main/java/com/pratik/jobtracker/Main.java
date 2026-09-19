@@ -507,16 +507,23 @@ public class Main extends Application {
 
         root.setTop(topSection);
 
-        VBox centreSection = new VBox(
+        VBox tableSection = new VBox(
                 10,
                 table,
-                applicationPages,
+                applicationPages
+        );
+
+        VBox detailsSection = new VBox(
+                10,
                 selectedCompany,
                 new Label("Job Description"),
                 descriptionArea,
                 new Label("Status History"),
                 statusHistoryGrid
         );
+
+        root.setCenter(tableSection);
+        root.setBottom(detailsSection);
 
         showPage(
                 table,
@@ -527,8 +534,6 @@ public class Main extends Application {
                 applicationPages,
                 0
         );
-
-        root.setCenter(centreSection);
 
         Scene scene = new Scene(root, 800, 650);
 
