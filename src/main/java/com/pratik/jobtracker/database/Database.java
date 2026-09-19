@@ -42,12 +42,25 @@ public class Database {
                 )
                 """;
 
+        String statusHistorySql = """
+                CREATE TABLE IF NOT EXISTS application_status_history (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    application_id INTEGER NOT NULL,
+                    status TEXT NOT NULL,
+                    reached_at TEXT NOT NULL,
+                    FOREIGN KEY (application_id)
+                        REFERENCES applications(id)
+                        ON DELETE CASCADE
+                )
+                """;
+
         try (
                 Connection connection = getConnection();
                 Statement statement = connection.createStatement()
         ) {
             statement.execute(applicationSql);
             statement.execute(interviewSql);
+            statement.execute(statusHistorySql);
 
             System.out.println("Database initialised successfully.");
 
