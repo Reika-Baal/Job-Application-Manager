@@ -4,10 +4,13 @@ import java.util.List;
 
 import com.pratik.jobtracker.database.Database;
 import com.pratik.jobtracker.model.JobApplication;
+import com.pratik.jobtracker.model.ApplicationStatus;
+import com.pratik.jobtracker.model.Interview;
 import com.pratik.jobtracker.service.ApplicationService;
+import com.pratik.jobtracker.service.InterviewService;
 import com.pratik.jobtracker.ui.AddApplicationView;
 import com.pratik.jobtracker.ui.EditApplicationView;
-import com.pratik.jobtracker.model.ApplicationStatus;
+
 import com.pratik.jobtracker.ui.InterviewManagementView;
 
 import javafx.application.Application;
@@ -23,6 +26,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private final ApplicationService service = new ApplicationService();
+
+    private final InterviewService interviewService = new InterviewService();
 
     @Override
     public void start(Stage stage) {
@@ -333,6 +338,11 @@ public class Main extends Application {
                     }
                 });
 
+        ListView<String> upcomingInterviewList = new ListView<>();
+        upcomingInterviewList.setPrefHeight(120);
+
+        refreshUpcomingInterviews(upcomingInterviewList);
+
         HBox buttonBar = new HBox(10, addButton, editButton, deleteButton, interviewButton);
 
         HBox filterBar = new HBox(10, searchField, statusFilter);
@@ -347,7 +357,13 @@ public class Main extends Application {
                 rejectedLabel
         );
 
-        VBox topSection = new VBox(10, title, statisticsBar, buttonBar, filterBar);
+        VBox upcomingSection = new VBox(
+                5,
+                new Label("Upcoming Interviews"),
+                upcomingInterviewList
+        );
+
+        VBox topSection = new VBox(10, title, statisticsBar, upcomingSection, buttonBar, filterBar);
 
         BorderPane root = new BorderPane();
 
@@ -368,6 +384,41 @@ public class Main extends Application {
         stage.setTitle("Job Application Manager");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void refreshUpcomingInterviews(ListView<String> upcomingInterviewList) {
+
+        List<Interview> upcoming =
+                interviewService.getUpcomingInterviews(7);
+
+        upcomingInterviewList.getItems().clear();
+
+        if (upcoming.isEmpty()) {
+            upcomingInterviewList.getItems().add(
+                    "No upcoming interviews in the next 7 days."
+            );
+            return;
+        }
+
+        for (Interview interview : upcoming) {
+
+            JobApplication application =
+                    service.getApplicationById(
+                            interview.getApplicationId()
+                    );
+
+            String company = application != null
+                    ? application.getCompany()
+                    : "Unknown Company";
+
+            upcomingInterviewList.getItems().add(
+                    company
+                            + " - "
+                            + interview.getInterviewDateTime()
+                            + " - "
+                            + interview.getType()
+            );
+        }
     }
 
     private void refreshTable(
