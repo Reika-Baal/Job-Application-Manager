@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private static final int ITEMS_PER_PAGE = 5;
+
     private final ApplicationService service = new ApplicationService();
 
     private final InterviewService interviewService = new InterviewService();
@@ -41,6 +43,17 @@ public class Main extends Application {
         Label title = new Label("Job Application Manager");
 
         TableView<JobApplication> table = new TableView<>();
+
+        TableColumn<JobApplication, String> idColumn =
+                new TableColumn<>("Entry #");
+
+        idColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        String.valueOf(data.getValue().getId())
+                )
+        );
+
+        idColumn.setPrefWidth(65);
 
         TableColumn<JobApplication, String> companyColumn =
                 new TableColumn<>("Company");
@@ -97,6 +110,7 @@ public class Main extends Application {
         );
 
         table.getColumns().addAll(
+                idColumn,
                 companyColumn,
                 roleColumn,
                 salaryColumn,
@@ -111,10 +125,12 @@ public class Main extends Application {
                 );
 
         table.setItems(applications);
+        Pagination applicationPages = new Pagination();
+        applicationPages.setMaxPageIndicatorCount(5);
         table.setPrefHeight(260);
 
         TextField searchField = new TextField();
-        searchField.setPromptText("Search company or location...");
+        searchField.setPromptText("Search entry #, company or location...");
         searchField.setPrefWidth(300);
 
         ComboBox<String> statusFilter = new ComboBox<>();
@@ -128,20 +144,57 @@ public class Main extends Application {
         statusFilter.setValue("All Statuses");
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilters(
-                    applications,
-                    newValue,
-                    statusFilter.getValue()
+
+            List<JobApplication> filtered =
+                    getFilteredApplications(
+                            newValue,
+                            statusFilter.getValue()
+                    );
+
+            applicationPages.setCurrentPageIndex(0);
+
+            showPage(
+                    table,
+                    filtered,
+                    applicationPages,
+                    0
             );
         });
 
         statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilters(
-                    applications,
-                    searchField.getText(),
-                    newValue
+
+            List<JobApplication> filtered =
+                    getFilteredApplications(
+                            searchField.getText(),
+                            newValue
+                    );
+
+            applicationPages.setCurrentPageIndex(0);
+
+            showPage(
+                    table,
+                    filtered,
+                    applicationPages,
+                    0
             );
         });
+
+        applicationPages.currentPageIndexProperty()
+                .addListener((observable, oldPage, newPage) -> {
+
+                    List<JobApplication> filtered =
+                            getFilteredApplications(
+                                    searchField.getText(),
+                                    statusFilter.getValue()
+                            );
+
+                    showPage(
+                            table,
+                            filtered,
+                            applicationPages,
+                            newPage.intValue()
+                    );
+                });
 
         Button addButton = new Button("Add Application");
 
@@ -199,7 +252,9 @@ public class Main extends Application {
                         refreshTable(
                                 applications,
                                 searchField.getText(),
-                                statusFilter.getValue()
+                                statusFilter.getValue(),
+                                table,
+                                applicationPages
                         );
 
                         refreshStatistics(
@@ -252,7 +307,9 @@ public class Main extends Application {
                         refreshTable(
                                 applications,
                                 searchField.getText(),
-                                statusFilter.getValue()
+                                statusFilter.getValue(),
+                                table,
+                                applicationPages
                         );
 
                         refreshStatistics(
@@ -292,7 +349,9 @@ public class Main extends Application {
                                 refreshTable(
                                         applications,
                                         searchField.getText(),
-                                        statusFilter.getValue()
+                                        statusFilter.getValue(),
+                                        table,
+                                        applicationPages
                                 );
 
                                 refreshStatistics(
@@ -439,11 +498,22 @@ public class Main extends Application {
         VBox centreSection = new VBox(
                 10,
                 table,
+                applicationPages,
                 selectedCompany,
                 new Label("Job Description"),
                 descriptionArea,
                 new Label("Status History"),
                 statusHistoryGrid
+        );
+
+        showPage(
+                table,
+                getFilteredApplications(
+                        searchField.getText(),
+                        statusFilter.getValue()
+                ),
+                applicationPages,
+                0
         );
 
         root.setCenter(centreSection);
@@ -496,9 +566,23 @@ public class Main extends Application {
     private void refreshTable(
             ObservableList<JobApplication> applications,
             String searchText,
-            String statusText
+            String statusText,
+            TableView<JobApplication> table,
+            Pagination applicationPages
     ) {
-        applyFilters(applications, searchText, statusText);
+
+        List<JobApplication> filtered =
+                getFilteredApplications(
+                        searchText,
+                        statusText
+                );
+
+        showPage(
+                table,
+                filtered,
+                applicationPages,
+                applicationPages.getCurrentPageIndex()
+        );
     }
 
     private void refreshStatistics(
@@ -523,29 +607,39 @@ public class Main extends Application {
         rejectedLabel.setText("Rejected: " + service.countByStatus(ApplicationStatus.REJECTED));
     }
 
-    private void applyFilters(
-            ObservableList<JobApplication> applications,
+    private List<JobApplication> getFilteredApplications(
             String searchText,
             String statusText
     ) {
-        List<JobApplication> results = service.getAllApplications();
+
+        List<JobApplication> results =
+                service.getAllApplications();
 
         if (searchText != null && !searchText.isBlank()) {
+
             String query = searchText.toLowerCase();
 
             results = results.stream()
                     .filter(app ->
-                            app.getCompany().toLowerCase().contains(query)
-                                    || app.getLocation()
+                            app.getCompany()
                                     .toLowerCase()
                                     .contains(query)
+                                    ||
+                                    app.getLocation()
+                                            .toLowerCase()
+                                            .contains(query)
+                                    ||
+                                    String.valueOf(app.getId())
+                                            .equals(query)
                     )
                     .toList();
         }
 
-        if (statusText != null && !statusText.equals("All Statuses")) {
+        if (statusText != null &&
+                !statusText.equals("All Statuses")) {
 
-            ApplicationStatus status = ApplicationStatus.valueOf(statusText);
+            ApplicationStatus status =
+                    ApplicationStatus.valueOf(statusText);
 
             results = results.stream()
                     .filter(app ->
@@ -554,7 +648,7 @@ public class Main extends Application {
                     .toList();
         }
 
-        applications.setAll(results);
+        return results;
     }
 
     private void showInterviewReminder() {
@@ -597,6 +691,52 @@ public class Main extends Application {
         reminder.setContentText(message.toString());
 
         reminder.showAndWait();
+    }
+
+    private void showPage(
+            TableView<JobApplication> table,
+            List<JobApplication> applications,
+            Pagination applicationPages,
+            int pageIndex
+    ) {
+
+        int pageCount = Math.max(
+                1,
+                (int) Math.ceil(
+                        (double) applications.size() / ITEMS_PER_PAGE
+                )
+        );
+
+        applicationPages.setPageCount(pageCount);
+
+        if (pageIndex >= pageCount) {
+            pageIndex = pageCount - 1;
+        }
+
+        if (applications.isEmpty()) {
+            table.setItems(
+                    FXCollections.observableArrayList()
+            );
+            return;
+        }
+
+        int fromIndex =
+                pageIndex * ITEMS_PER_PAGE;
+
+        int toIndex =
+                Math.min(
+                        fromIndex + ITEMS_PER_PAGE,
+                        applications.size()
+                );
+
+        table.setItems(
+                FXCollections.observableArrayList(
+                        applications.subList(
+                                fromIndex,
+                                toIndex
+                        )
+                )
+        );
     }
 
     public static void main(String[] args) {
