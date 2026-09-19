@@ -1,6 +1,7 @@
 package com.pratik.jobtracker;
 
 import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 import com.pratik.jobtracker.database.Database;
 import com.pratik.jobtracker.model.JobApplication;
@@ -388,6 +389,9 @@ public class Main extends Application {
 
     private void refreshUpcomingInterviews(ListView<String> upcomingInterviewList) {
 
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/mm/yyyy HH:MM");
+
         List<Interview> upcoming =
                 interviewService.getUpcomingInterviews(7);
 
@@ -414,7 +418,7 @@ public class Main extends Application {
             upcomingInterviewList.getItems().add(
                     company
                             + " - "
-                            + interview.getInterviewDateTime()
+                            + interview.getInterviewDateTime().format(formatter)
                             + " - "
                             + interview.getType()
             );

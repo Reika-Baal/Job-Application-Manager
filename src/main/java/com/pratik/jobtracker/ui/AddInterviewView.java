@@ -38,6 +38,24 @@ public class AddInterviewView {
         TextField timeField = new TextField();
         timeField.setPromptText("Time (HH:MM)");
 
+        timeField.setTextFormatter(new TextFormatter<>(change -> {
+
+            String newText = change.getControlNewText();
+
+            if (!newText.matches("\\d{0,2}:?\\d{0,2}")) {
+                return null;
+            }
+
+            if (newText.length() == 2
+                    && change.getText().matches("\\d")
+                    && !newText.contains(":")) {
+
+                change.setText(change.getText() + ":");
+            }
+
+            return change;
+        }));
+
         TextField typeField = new TextField();
         typeField.setPromptText("Interview Type");
 
