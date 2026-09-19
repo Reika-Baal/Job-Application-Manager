@@ -3,7 +3,6 @@ package com.pratik.jobtracker.ui;
 import com.pratik.jobtracker.model.Interview;
 import com.pratik.jobtracker.model.JobApplication;
 import com.pratik.jobtracker.service.InterviewService;
-import com.pratik.jobtracker.ui.AddInterviewView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,13 +16,18 @@ public class InterviewManagementView {
 
     private final JobApplication application;
     private final InterviewService interviewService;
+    private final Runnable onInterviewsChanged;
 
     private final ObservableList<Interview> interviews =
             FXCollections.observableArrayList();
 
-    public InterviewManagementView(JobApplication application) {
+    public InterviewManagementView(
+            JobApplication application,
+            Runnable onInterviewsChanged
+    ) {
         this.application = application;
         this.interviewService = new InterviewService();
+        this.onInterviewsChanged = onInterviewsChanged;
     }
 
     public void show() {
@@ -75,6 +79,7 @@ public class InterviewManagementView {
         );
 
         refreshInterviews();
+        onInterviewsChanged.run();
 
         table.setItems(interviews);
 
@@ -106,7 +111,10 @@ public class InterviewManagementView {
                     new AddInterviewView(
                             application,
                             interviewService,
-                            this::refreshInterviews
+                            () -> {
+                                refreshInterviews();
+                                onInterviewsChanged.run();
+                            }
                     );
 
             addView.show();
@@ -125,7 +133,10 @@ public class InterviewManagementView {
                     new EditInterviewView(
                             selectedInterview,
                             interviewService,
-                            this::refreshInterviews
+                            () -> {
+                                refreshInterviews();
+                                onInterviewsChanged.run();
+                            }
                     );
 
             editView.show();
@@ -160,6 +171,7 @@ public class InterviewManagementView {
 
                     if (deleted) {
                         refreshInterviews();
+                        onInterviewsChanged.run();
                         notesArea.clear();
                     }
                 }

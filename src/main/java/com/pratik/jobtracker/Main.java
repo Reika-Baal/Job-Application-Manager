@@ -176,6 +176,11 @@ public class Main extends Application {
 
         descriptionArea.setPrefRowCount(5);
 
+        ListView<String> upcomingInterviewList = new ListView<>();
+        upcomingInterviewList.setPrefHeight(120);
+
+        refreshUpcomingInterviews(upcomingInterviewList);
+
         addButton.setOnAction(event -> {
             AddApplicationView addView = new AddApplicationView(
                     service,
@@ -303,7 +308,10 @@ public class Main extends Application {
 
             InterviewManagementView interviewView =
                     new InterviewManagementView(
-                            selectedApplication
+                            selectedApplication,
+                            () -> refreshUpcomingInterviews(
+                                    upcomingInterviewList
+                            )
                     );
 
             interviewView.show();
@@ -338,11 +346,6 @@ public class Main extends Application {
                         descriptionArea.clear();
                     }
                 });
-
-        ListView<String> upcomingInterviewList = new ListView<>();
-        upcomingInterviewList.setPrefHeight(120);
-
-        refreshUpcomingInterviews(upcomingInterviewList);
 
         HBox buttonBar = new HBox(10, addButton, editButton, deleteButton, interviewButton);
 
@@ -390,7 +393,7 @@ public class Main extends Application {
     private void refreshUpcomingInterviews(ListView<String> upcomingInterviewList) {
 
         DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("dd/mm/yyyy HH:MM");
+                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         List<Interview> upcoming =
                 interviewService.getUpcomingInterviews(7);
