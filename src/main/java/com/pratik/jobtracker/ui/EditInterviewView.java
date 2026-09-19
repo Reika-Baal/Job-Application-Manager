@@ -40,23 +40,29 @@ public class EditInterviewView {
         TextField timeField =
                 new TextField(currentDateTime.toLocalTime().toString());
 
-        timeField.setTextFormatter(new TextFormatter<>(change -> {
+        timeField.textProperty().addListener((observable, oldValue, newValue) -> {
 
-            String newText = change.getControlNewText();
+            String digits = newValue.replaceAll("\\D", "");
 
-            if (!newText.matches("\\d{0,2}:?\\d{0,2}")) {
-                return null;
+            if (digits.length() > 4) {
+                digits = digits.substring(0, 4);
             }
 
-            if (newText.length() == 2
-                    && change.getText().matches("\\d")
-                    && !newText.contains(":")) {
+            String formatted;
 
-                change.setText(change.getText() + ":");
+            if (digits.length() >= 3) {
+                formatted = digits.substring(0, 2)
+                        + ":"
+                        + digits.substring(2);
+            } else {
+                formatted = digits;
             }
 
-            return change;
-        }));
+            if (!newValue.equals(formatted)) {
+                timeField.setText(formatted);
+                timeField.positionCaret(formatted.length());
+            }
+        });
 
         TextField typeField =
                 new TextField(interview.getType());
