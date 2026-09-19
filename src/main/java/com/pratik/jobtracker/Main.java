@@ -535,7 +535,7 @@ public class Main extends Application {
                 0
         );
 
-        Scene scene = new Scene(root, 800, 650);
+        Scene scene = new Scene(root, 800, 750);
 
         stage.setTitle("Job Application Manager");
         stage.setScene(scene);
