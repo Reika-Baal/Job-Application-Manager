@@ -125,9 +125,17 @@ public class Main extends Application {
                 );
 
         table.setItems(applications);
+
         Pagination applicationPages = new Pagination();
         applicationPages.setMaxPageIndicatorCount(5);
-        table.setPrefHeight(260);
+
+        table.setFixedCellSize(30);
+
+        double tableHeight = 175;
+
+        table.setPrefHeight(tableHeight);
+        table.setMinHeight(tableHeight);
+        table.setMaxHeight(tableHeight);
 
         TextField searchField = new TextField();
         searchField.setPromptText("Search entry #, company or location...");
@@ -235,10 +243,14 @@ public class Main extends Application {
         descriptionArea.setPromptText("Job description");
 
         descriptionArea.setPrefRowCount(3);
+        descriptionArea.setMaxHeight(80);
 
         GridPane statusHistoryGrid = new GridPane();
         statusHistoryGrid.setHgap(25);
         statusHistoryGrid.setVgap(8);
+        statusHistoryGrid.setPrefHeight(90);
+        statusHistoryGrid.setMinHeight(90);
+        statusHistoryGrid.setMaxHeight(90);
 
         ListView<String> upcomingInterviewList = new ListView<>();
         upcomingInterviewList.setPrefHeight(120);
