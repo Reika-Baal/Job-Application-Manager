@@ -11,7 +11,7 @@ import com.pratik.jobtracker.service.ApplicationService;
 import com.pratik.jobtracker.service.InterviewService;
 import com.pratik.jobtracker.ui.AddApplicationView;
 import com.pratik.jobtracker.ui.EditApplicationView;
-
+import com.pratik.jobtracker.ui.StageHistoryStatsView;
 import com.pratik.jobtracker.ui.InterviewManagementView;
 
 import javafx.application.Application;
@@ -146,6 +146,8 @@ public class Main extends Application {
         Button deleteButton = new Button("Delete Application");
 
         Button interviewButton = new Button("Manage Interviews");
+
+        Button historyStatsButton = new Button("Stage History Stats");
 
         editButton.setDisable(true);
         deleteButton.setDisable(true);
@@ -318,6 +320,14 @@ public class Main extends Application {
             interviewView.show();
         });
 
+        historyStatsButton.setOnAction(event -> {
+
+            StageHistoryStatsView statsView =
+                    new StageHistoryStatsView(service);
+
+            statsView.show();
+        });
+
         table.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldSelection, newSelection) -> {
@@ -348,7 +358,14 @@ public class Main extends Application {
                     }
                 });
 
-        HBox buttonBar = new HBox(10, addButton, editButton, deleteButton, interviewButton);
+        HBox buttonBar = new HBox(
+                10,
+                addButton,
+                editButton,
+                deleteButton,
+                interviewButton,
+                historyStatsButton
+        );
 
         HBox filterBar = new HBox(10, searchField, statusFilter);
 

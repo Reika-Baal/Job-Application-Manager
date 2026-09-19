@@ -1,17 +1,27 @@
 package com.pratik.jobtracker.service;
 
-import com.pratik.jobtracker.model.JobApplication;
+import com.pratik.jobtracker.database.ApplicationStatusHistorySNL;
 import com.pratik.jobtracker.database.JobApplicationSNL;
+
+import com.pratik.jobtracker.model.JobApplication;
+import com.pratik.jobtracker.model.ApplicationStatusHistory;
 import com.pratik.jobtracker.model.ApplicationStatus;
+
+
+import java.time.LocalDateTime;
 
 import java.util.List;
 
 public class ApplicationService {
+
     private final JobApplicationSNL snl;
+    private final ApplicationStatusHistorySNL statusHistorySnl;
 
     public ApplicationService() {
         this.snl = new JobApplicationSNL();
+        this.statusHistorySnl = new ApplicationStatusHistorySNL();
     }
+
 
     public void addApplication(JobApplication application) {
 
@@ -38,6 +48,15 @@ public class ApplicationService {
         }
 
         snl.insert(application);
+
+        ApplicationStatusHistory history =
+                new ApplicationStatusHistory(
+                        application.getId(),
+                        application.getStatus(),
+                        LocalDateTime.now()
+                );
+
+        statusHistorySnl.insert(history);
     }
 
     public List<JobApplication> getAllApplications() {
@@ -76,7 +95,25 @@ public class ApplicationService {
             throw new IllegalArgumentException("Location must be entered.");
         }
 
-        return snl.update(application);
+        boolean updated = snl.update(application);
+
+        if (updated &&
+                !statusHistorySnl.hasReachedStatus(
+                        application.getId(),
+                        application.getStatus()
+                )) {
+
+            ApplicationStatusHistory history =
+                    new ApplicationStatusHistory(
+                            application.getId(),
+                            application.getStatus(),
+                            LocalDateTime.now()
+                    );
+
+            statusHistorySnl.insert(history);
+        }
+
+        return updated;
     }
 
     public boolean deleteApplication(int id) {
@@ -193,4 +230,15 @@ public class ApplicationService {
 
         return (double) offers / total * 100;
     }
+
+    public int countApplicationsThatReachedStatus(
+            ApplicationStatus status
+    ) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null.");
+        }
+
+        return statusHistorySnl.countApplicationsThatReachedStatus(status);
+    }
+
 }
