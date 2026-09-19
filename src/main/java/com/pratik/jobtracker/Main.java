@@ -34,6 +34,7 @@ public class Main extends Application {
     public void start(Stage stage) {
 
         Database.initialiseDatabase();
+        showInterviewReminder();
 
         Label title = new Label("Job Application Manager");
 
@@ -490,6 +491,48 @@ public class Main extends Application {
         }
 
         applications.setAll(results);
+    }
+
+    private void showInterviewReminder() {
+
+        List<Interview> upcoming =
+                interviewService.getUpcomingInterviews(1);
+
+        if (upcoming.isEmpty()) {
+            return;
+        }
+
+        StringBuilder message = new StringBuilder();
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        for (Interview interview : upcoming) {
+
+            JobApplication application =
+                    service.getApplicationById(
+                            interview.getApplicationId()
+                    );
+
+            String company = application !=null
+                    ? application.getCompany()
+                    : "Unknown Company";
+
+            message.append(company)
+                    .append(" - ")
+                    .append(interview.getInterviewDateTime().format(formatter))
+                    .append(" - ")
+                    .append(interview.getType())
+                    .append("\n");
+        }
+
+        Alert reminder = new Alert(Alert.AlertType.INFORMATION);
+
+        reminder.setTitle("Upcoming Interview Reminder");
+        reminder.setHeaderText("You have an interview within the next 24 hours");
+        reminder.setContentText(message.toString());
+
+        reminder.showAndWait();
     }
 
     public static void main(String[] args) {
