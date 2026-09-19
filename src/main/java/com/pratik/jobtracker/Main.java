@@ -7,6 +7,7 @@ import com.pratik.jobtracker.database.Database;
 import com.pratik.jobtracker.model.JobApplication;
 import com.pratik.jobtracker.model.ApplicationStatus;
 import com.pratik.jobtracker.model.Interview;
+import com.pratik.jobtracker.model.ApplicationStatusHistory;
 import com.pratik.jobtracker.service.ApplicationService;
 import com.pratik.jobtracker.service.InterviewService;
 import com.pratik.jobtracker.ui.AddApplicationView;
@@ -179,6 +180,9 @@ public class Main extends Application {
 
         descriptionArea.setPrefRowCount(5);
 
+        ListView<String> statusHistoryList = new ListView<>();
+        statusHistoryList.setPrefHeight(120);
+
         ListView<String> upcomingInterviewList = new ListView<>();
         upcomingInterviewList.setPrefHeight(120);
 
@@ -261,6 +265,7 @@ public class Main extends Application {
                         );
 
                         descriptionArea.clear();
+                        statusHistoryList.getItems().clear();
                     }
                 }
             });
@@ -339,22 +344,50 @@ public class Main extends Application {
                     interviewButton.setDisable(nothingSelected);
 
                     if (newSelection != null) {
+
                         selectedCompany.setText(
-                                newSelection.getCompany() +
-                                        " - " +
-                                        newSelection.getRole()
+                                newSelection.getCompany()
+                                        + " - "
+                                        + newSelection.getRole()
                         );
 
                         descriptionArea.setText(
                                 newSelection.getJobDescription()
                         );
 
+                        statusHistoryList.getItems().clear();
+
+                        List<ApplicationStatusHistory> history =
+                                service.getStatusHistoryForApplication(
+                                        newSelection.getId()
+                                );
+
+                        DateTimeFormatter formatter =
+                                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+                        for (ApplicationStatusHistory entry : history) {
+
+                            statusHistoryList.getItems().add(
+                                    entry.getStatus()
+                                            + " - "
+                                            + entry.getReachedAt().format(formatter)
+                            );
+                        }
+
+                        if (history.isEmpty()) {
+                            statusHistoryList.getItems().add(
+                                    "No status history recorded."
+                            );
+                        }
+
                     } else {
+
                         selectedCompany.setText(
                                 "Select an application to view details"
                         );
 
                         descriptionArea.clear();
+                        statusHistoryList.getItems().clear();
                     }
                 });
 
@@ -396,7 +429,9 @@ public class Main extends Application {
                 table,
                 selectedCompany,
                 new Label("Job Description"),
-                descriptionArea
+                descriptionArea,
+                new Label("Status History"),
+                statusHistoryList
         );
 
         root.setCenter(centreSection);

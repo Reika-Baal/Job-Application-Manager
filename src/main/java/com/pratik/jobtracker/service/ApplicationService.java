@@ -241,4 +241,16 @@ public class ApplicationService {
         return statusHistorySnl.countApplicationsThatReachedStatus(status);
     }
 
+    public List<ApplicationStatusHistory> getStatusHistoryForApplication(
+            int applicationId
+    ) {
+        if (applicationId <= 0) {
+            throw new IllegalArgumentException(
+                    "Application ID is invalid."
+            );
+        }
+
+        return statusHistorySnl.findByApplicationId(applicationId);
+    }
+
 }
