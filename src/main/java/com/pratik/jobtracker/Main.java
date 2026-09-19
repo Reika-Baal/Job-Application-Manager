@@ -23,6 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -110,9 +111,11 @@ public class Main extends Application {
                 );
 
         table.setItems(applications);
+        table.setPrefHeight(260);
 
         TextField searchField = new TextField();
         searchField.setPromptText("Search company or location...");
+        searchField.setPrefWidth(300);
 
         ComboBox<String> statusFilter = new ComboBox<>();
 
@@ -178,10 +181,11 @@ public class Main extends Application {
         descriptionArea.setWrapText(true);
         descriptionArea.setPromptText("Job description");
 
-        descriptionArea.setPrefRowCount(5);
+        descriptionArea.setPrefRowCount(3);
 
-        ListView<String> statusHistoryList = new ListView<>();
-        statusHistoryList.setPrefHeight(120);
+        GridPane statusHistoryGrid = new GridPane();
+        statusHistoryGrid.setHgap(25);
+        statusHistoryGrid.setVgap(8);
 
         ListView<String> upcomingInterviewList = new ListView<>();
         upcomingInterviewList.setPrefHeight(120);
@@ -265,7 +269,7 @@ public class Main extends Application {
                         );
 
                         descriptionArea.clear();
-                        statusHistoryList.getItems().clear();
+                        statusHistoryGrid.getChildren().clear();
                     }
                 }
             });
@@ -355,7 +359,7 @@ public class Main extends Application {
                                 newSelection.getJobDescription()
                         );
 
-                        statusHistoryList.getItems().clear();
+                        statusHistoryGrid.getChildren().clear();
 
                         List<ApplicationStatusHistory> history =
                                 service.getStatusHistoryForApplication(
@@ -365,21 +369,29 @@ public class Main extends Application {
                         DateTimeFormatter formatter =
                                 DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-                        for (ApplicationStatusHistory entry : history) {
+                        for (int i = 0; i < history.size(); i++) {
 
-                            statusHistoryList.getItems().add(
+                            ApplicationStatusHistory entry = history.get(i);
+
+                            Label historyEntry = new Label(
                                     entry.getStatus()
                                             + " - "
                                             + entry.getReachedAt().format(formatter)
                             );
+
+                            int row = i % 3;
+                            int column = i / 3;
+
+                            statusHistoryGrid.add(historyEntry, column, row);
                         }
 
                         if (history.isEmpty()) {
-                            statusHistoryList.getItems().add(
-                                    "No status history recorded."
+                            statusHistoryGrid.add(
+                                    new Label("No status history recorded."),
+                                    0,
+                                    0
                             );
                         }
-
                     } else {
 
                         selectedCompany.setText(
@@ -387,7 +399,7 @@ public class Main extends Application {
                         );
 
                         descriptionArea.clear();
-                        statusHistoryList.getItems().clear();
+                        statusHistoryGrid.getChildren().clear();
                     }
                 });
 
@@ -431,12 +443,12 @@ public class Main extends Application {
                 new Label("Job Description"),
                 descriptionArea,
                 new Label("Status History"),
-                statusHistoryList
+                statusHistoryGrid
         );
 
         root.setCenter(centreSection);
 
-        Scene scene = new Scene(root, 900, 600);
+        Scene scene = new Scene(root, 800, 650);
 
         stage.setTitle("Job Application Manager");
         stage.setScene(scene);
