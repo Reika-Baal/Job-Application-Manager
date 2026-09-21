@@ -49,6 +49,11 @@ public class AddApplicationView {
         TextArea descriptionArea = new TextArea();
         descriptionArea.setPromptText("Job Description");
 
+        TextArea notesArea = new TextArea();
+        notesArea.setPromptText("Notes");
+        notesArea.setWrapText(true);
+        notesArea.setPrefRowCount(3);
+
         Button saveButton = new Button("Save");
 
         Label messageLabel = new Label();
@@ -65,7 +70,8 @@ public class AddApplicationView {
                         locationField.getText(),
                         datePicker.getValue(),
                         statusBox.getValue(),
-                        descriptionArea.getText()
+                        descriptionArea.getText(),
+                        notesArea.getText()
                 );
 
                 service.addApplication(application);
@@ -93,7 +99,10 @@ public class AddApplicationView {
                 locationField,
                 datePicker,
                 statusBox,
+                new Label("Job Description"),
                 descriptionArea,
+                new Label("Notes"),
+                notesArea,
                 saveButton,
                 messageLabel
         );

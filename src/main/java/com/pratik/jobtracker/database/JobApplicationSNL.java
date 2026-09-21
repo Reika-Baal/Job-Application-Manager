@@ -13,8 +13,8 @@ public class JobApplicationSNL {
     public void insert(JobApplication application) {
         String sql = """
                 INSERT INTO applications
-                (company, role, salary, location, application_date, status, job_description)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (company, role, salary, location, application_date, status, job_description, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (
@@ -32,6 +32,7 @@ public class JobApplicationSNL {
             statement.setString(5, application.getApplicationDate().toString());
             statement.setString(6, application.getStatus().name());
             statement.setString(7, application.getJobDescription());
+            statement.setString(8, application.getNotes());
 
             statement.executeUpdate();
 
@@ -67,7 +68,8 @@ public class JobApplicationSNL {
                         results.getString("location"),
                         LocalDate.parse(results.getString("application_date")),
                         ApplicationStatus.valueOf(results.getString("status")),
-                        results.getString("job_description")
+                        results.getString("job_description"),
+                        results.getString("notes")
                 );
 
                 application.setId(results.getInt("id"));
@@ -89,7 +91,8 @@ public class JobApplicationSNL {
                     location = ?,
                     application_date = ?,
                     status = ?,
-                    job_description = ?
+                    job_description = ?,
+                    notes = ?
                 WHERE id = ?
                 """;
 
@@ -104,7 +107,8 @@ public class JobApplicationSNL {
             statement.setString(5, application.getApplicationDate().toString());
             statement.setString(6, application.getStatus().name());
             statement.setString(7, application.getJobDescription());
-            statement.setInt(8, application.getId());
+            statement.setString(8, application.getNotes());
+            statement.setInt(9, application.getId());
 
             return statement.executeUpdate() > 0;
 
@@ -137,7 +141,8 @@ public class JobApplicationSNL {
                         results.getString("location"),
                         LocalDate.parse(results.getString("application_date")),
                         ApplicationStatus.valueOf(results.getString("status")),
-                        results.getString("job_description")
+                        results.getString("job_description"),
+                        results.getString("notes")
                 );
 
                 application.setId(results.getInt("id"));

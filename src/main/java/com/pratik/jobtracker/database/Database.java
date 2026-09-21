@@ -24,7 +24,8 @@ public class Database {
                     location TEXT,
                     application_date TEXT,
                     status TEXT NOT NULL,
-                    job_description TEXT
+                    job_description TEXT,
+                    notes TEXT
                 )
                 """;
 
@@ -61,6 +62,13 @@ public class Database {
             statement.execute(applicationSql);
             statement.execute(interviewSql);
             statement.execute(statusHistorySql);
+
+            try {
+                statement.execute(
+                        "ALTER TABLE applications ADD COLUMN notes TEXT"
+                );
+            } catch (SQLException ignored) {
+            }
 
             System.out.println("Database initialised successfully.");
 

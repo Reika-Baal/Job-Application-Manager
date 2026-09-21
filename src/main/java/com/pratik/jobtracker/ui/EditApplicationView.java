@@ -49,6 +49,11 @@ public class EditApplicationView {
         TextArea descriptionArea =
                 new TextArea(application.getJobDescription());
 
+        TextArea notesArea = new TextArea();
+        notesArea.setWrapText(true);
+        notesArea.setPrefRowCount(3);
+        notesArea.setText(application.getNotes());
+
         Button saveButton = new Button("Save Changes");
 
         Label messageLabel = new Label();
@@ -66,6 +71,7 @@ public class EditApplicationView {
                 application.setApplicationDate(datePicker.getValue());
                 application.setStatus(statusBox.getValue());
                 application.setJobDescription(descriptionArea.getText());
+                application.setNotes(notesArea.getText());
 
                 boolean updated =
                         service.updateApplication(application);
@@ -100,7 +106,10 @@ public class EditApplicationView {
                 locationField,
                 datePicker,
                 statusBox,
+                new Label("Job Description"),
                 descriptionArea,
+                new Label("Notes"),
+                notesArea,
                 saveButton,
                 messageLabel
         );

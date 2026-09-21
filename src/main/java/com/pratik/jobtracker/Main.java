@@ -245,6 +245,13 @@ public class Main extends Application {
         descriptionArea.setPrefRowCount(3);
         descriptionArea.setMaxHeight(80);
 
+        TextArea notesArea = new TextArea();
+        notesArea.setEditable(false);
+        notesArea.setWrapText(true);
+        notesArea.setPromptText("Application notes");
+        notesArea.setPrefRowCount(3);
+        notesArea.setMaxHeight(80);
+
         GridPane statusHistoryGrid = new GridPane();
         statusHistoryGrid.setHgap(25);
         statusHistoryGrid.setVgap(8);
@@ -338,6 +345,7 @@ public class Main extends Application {
                         );
 
                         descriptionArea.clear();
+                        notesArea.clear();
                         statusHistoryGrid.getChildren().clear();
                     }
                 }
@@ -430,6 +438,10 @@ public class Main extends Application {
                                 newSelection.getJobDescription()
                         );
 
+                        notesArea.setText(
+                                newSelection.getNotes()
+                        );
+
                         statusHistoryGrid.getChildren().clear();
 
                         List<ApplicationStatusHistory> history =
@@ -470,6 +482,7 @@ public class Main extends Application {
                         );
 
                         descriptionArea.clear();
+                        notesArea.clear();
                         statusHistoryGrid.getChildren().clear();
                     }
                 });
@@ -518,6 +531,8 @@ public class Main extends Application {
                 selectedCompany,
                 new Label("Job Description"),
                 descriptionArea,
+                new Label("Notes"),
+                notesArea,
                 new Label("Status History"),
                 statusHistoryGrid
         );

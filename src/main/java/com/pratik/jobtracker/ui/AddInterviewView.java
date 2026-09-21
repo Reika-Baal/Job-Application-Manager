@@ -72,6 +72,9 @@ public class AddInterviewView {
         TextArea notesArea = new TextArea();
         notesArea.setPromptText("Interview Notes");
 
+        notesArea.setWrapText(true);
+        notesArea.setPrefRowCount(3);
+
         Button saveButton = new Button("Save Interview");
 
         Label messageLabel = new Label();
