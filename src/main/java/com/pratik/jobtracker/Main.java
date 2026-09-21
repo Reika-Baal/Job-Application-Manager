@@ -23,8 +23,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
 
 public class Main extends Application {
 
@@ -41,6 +43,8 @@ public class Main extends Application {
         showInterviewReminder();
 
         Label title = new Label("Job Application Manager");
+
+        title.getStyleClass().add("title");
 
         TableView<JobApplication> table = new TableView<>();
 
@@ -119,6 +123,10 @@ public class Main extends Application {
                 statusColumn
         );
 
+        table.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY
+        );
+
         ObservableList<JobApplication> applications =
                 FXCollections.observableArrayList(
                         service.getAllApplications()
@@ -139,17 +147,30 @@ public class Main extends Application {
 
         TextField searchField = new TextField();
         searchField.setPromptText("Search entry #, company or location...");
-        searchField.setPrefWidth(300);
+        searchField.setPrefWidth(260);
+
+        searchField.setPrefHeight(36);
+        searchField.setMinHeight(36);
+        searchField.setMaxHeight(36);
+
 
         ComboBox<String> statusFilter = new ComboBox<>();
 
-        statusFilter.getItems().add("All Statuses");
+        statusFilter.getItems().add("All Status");
 
         for (ApplicationStatus status : ApplicationStatus.values()) {
             statusFilter.getItems().add(status.name());
         }
 
-        statusFilter.setValue("All Statuses");
+        statusFilter.setValue("All Status");
+
+        statusFilter.setPrefHeight(36);
+        statusFilter.setMinHeight(36);
+        statusFilter.setMaxHeight(36);
+
+        statusFilter.setPrefWidth(155);
+        statusFilter.setMinWidth(155);
+        statusFilter.setMaxWidth(155);
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -206,13 +227,18 @@ public class Main extends Application {
 
         Button addButton = new Button("Add Application");
 
+        addButton.getStyleClass().add("primary-button");
+
         Button editButton = new Button("Edit Application");
 
         Button deleteButton = new Button("Delete Application");
 
+        deleteButton.getStyleClass().add("danger-button");
+
         Button interviewButton = new Button("Manage Interviews");
 
         Button historyStatsButton = new Button("Stage History Stats");
+
 
         editButton.setDisable(true);
         deleteButton.setDisable(true);
@@ -227,6 +253,13 @@ public class Main extends Application {
         Label interviewLabel = new Label();
         Label offerLabel = new Label();
         Label rejectedLabel = new Label();
+
+        totalLabel.getStyleClass().add("stat-label");
+        appliedLabel.getStyleClass().add("stat-label");
+        onlineTestLabel.getStyleClass().add("stat-label");
+        interviewLabel.getStyleClass().add("stat-label");
+        offerLabel.getStyleClass().add("stat-label");
+        rejectedLabel.getStyleClass().add("stat-label");
 
         refreshStatistics(
                 totalLabel,
@@ -243,24 +276,42 @@ public class Main extends Application {
         descriptionArea.setPromptText("Job description");
 
         descriptionArea.setPrefRowCount(3);
-        descriptionArea.setMaxHeight(80);
+        descriptionArea.setPrefHeight(90);
+        descriptionArea.setMinHeight(90);
+        descriptionArea.setMaxHeight(90);
 
         TextArea notesArea = new TextArea();
         notesArea.setEditable(false);
         notesArea.setWrapText(true);
         notesArea.setPromptText("Application notes");
         notesArea.setPrefRowCount(3);
-        notesArea.setMaxHeight(80);
+        notesArea.setPrefHeight(90);
+        notesArea.setMinHeight(90);
+        notesArea.setMaxHeight(90);
 
         GridPane statusHistoryGrid = new GridPane();
-        statusHistoryGrid.setHgap(25);
+        statusHistoryGrid.setHgap(15);
         statusHistoryGrid.setVgap(8);
-        statusHistoryGrid.setPrefHeight(90);
-        statusHistoryGrid.setMinHeight(90);
-        statusHistoryGrid.setMaxHeight(90);
+        statusHistoryGrid.setPrefHeight(95);
+        statusHistoryGrid.setMinHeight(95);
+        statusHistoryGrid.setMaxWidth(Double.MAX_VALUE);
+
+        ColumnConstraints firstColumn = new ColumnConstraints();
+        firstColumn.setPercentWidth(50);
+
+        ColumnConstraints secondColumn = new ColumnConstraints();
+        secondColumn.setPercentWidth(50);
+
+        statusHistoryGrid.getColumnConstraints().addAll(
+                firstColumn,
+                secondColumn
+        );
+
+        statusHistoryGrid.getStyleClass().add("status-history");
 
         ListView<String> upcomingInterviewList = new ListView<>();
-        upcomingInterviewList.setPrefHeight(120);
+        upcomingInterviewList.setPrefHeight(70);
+        upcomingInterviewList.setMaxHeight(70);
 
         refreshUpcomingInterviews(upcomingInterviewList);
 
@@ -462,6 +513,7 @@ public class Main extends Application {
                                             + entry.getReachedAt().format(formatter)
                             );
 
+
                             int row = i % 3;
                             int column = i / 3;
 
@@ -498,6 +550,14 @@ public class Main extends Application {
 
         HBox filterBar = new HBox(10, searchField, statusFilter);
 
+        filterBar.setSpacing(10);
+        filterBar.setFillHeight(false);
+
+        VBox.setMargin(
+                filterBar,
+                new javafx.geometry.Insets(0, 0, 12, 0)
+        );
+
         HBox statisticsBar = new HBox(
                 15,
                 totalLabel,
@@ -514,9 +574,18 @@ public class Main extends Application {
                 upcomingInterviewList
         );
 
-        VBox topSection = new VBox(10, title, statisticsBar, upcomingSection, buttonBar, filterBar);
+        upcomingSection.getStyleClass().add("panel");
+
+        HBox headerBar = new HBox(title);
+        headerBar.getStyleClass().add("top-banner");
+
+        VBox topSection = new VBox(10, headerBar, statisticsBar, upcomingSection, buttonBar, filterBar);
 
         BorderPane root = new BorderPane();
+
+        root.setPadding(
+                new javafx.geometry.Insets(16)
+        );
 
         root.setTop(topSection);
 
@@ -524,6 +593,17 @@ public class Main extends Application {
                 10,
                 table,
                 applicationPages
+        );
+
+        tableSection.setMaxHeight(
+                javafx.scene.layout.Region.USE_PREF_SIZE
+        );
+
+        tableSection.getStyleClass().add("panel");
+
+        BorderPane.setMargin(
+                tableSection,
+                new javafx.geometry.Insets(10, 0, 10, 0)
         );
 
         VBox descriptionSection = new VBox(
@@ -565,8 +645,19 @@ public class Main extends Application {
                 statusHistoryGrid
         );
 
-        root.setCenter(tableSection);
-        root.setBottom(detailsSection);
+        detailsSection.setMaxHeight(
+                javafx.scene.layout.Region.USE_PREF_SIZE
+        );
+
+        detailsSection.getStyleClass().add("details-panel");
+
+        VBox mainContent = new VBox(
+                10,
+                tableSection,
+                detailsSection
+        );
+
+        root.setCenter(mainContent);
 
         showPage(
                 table,
@@ -578,7 +669,11 @@ public class Main extends Application {
                 0
         );
 
-        Scene scene = new Scene(root, 800, 750);
+        Scene scene = new Scene(root, 900, 940);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Job Application Manager");
         stage.setScene(scene);
@@ -696,7 +791,7 @@ public class Main extends Application {
         }
 
         if (statusText != null &&
-                !statusText.equals("All Statuses")) {
+                !statusText.equals("All Status")) {
 
             ApplicationStatus status =
                     ApplicationStatus.valueOf(statusText);
