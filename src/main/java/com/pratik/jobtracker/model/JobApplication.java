@@ -20,20 +20,6 @@ public class JobApplication {
         return company;
     }
 
-    @Override
-    public String toString() {
-        return "JobApplication{" +
-                "id=" + id +
-                ", company='" + company + '\'' +
-                ", role='" + role + '\'' +
-                ", salary=" + salary +
-                ", location='" + location + '\'' +
-                ", applicationDate=" + applicationDate +
-                ", status=" + status +
-                ", jobDescription='" + jobDescription + '\'' +
-                '}';
-    }
-
     public void setCompany(String company) {
         this.company = company;
     }
@@ -86,6 +72,8 @@ public class JobApplication {
         this.jobDescription = jobDescription;
     }
 
+    private String notes;
+
     private String role;
 
     private double salary;
@@ -98,6 +86,29 @@ public class JobApplication {
 
     private String jobDescription;
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    @Override
+    public String toString() {
+        return "JobApplication{" +
+                "id=" + id +
+                ", company='" + company + '\'' +
+                ", notes='" + notes + '\'' +
+                ", role='" + role + '\'' +
+                ", salary=" + salary +
+                ", location='" + location + '\'' +
+                ", applicationDate=" + applicationDate +
+                ", status=" + status +
+                ", jobDescription='" + jobDescription + '\'' +
+                '}';
+    }
+
     public JobApplication(
             String company,
             String role,
@@ -105,7 +116,8 @@ public class JobApplication {
             String location,
             LocalDate applicationDate,
             ApplicationStatus status,
-            String jobDescription
+            String jobDescription,
+            String notes
     ) {
         this.company = company;
         this.role = role;
@@ -114,5 +126,6 @@ public class JobApplication {
         this.applicationDate = applicationDate;
         this.status = status;
         this.jobDescription = jobDescription;
+        this.notes = notes;
     }
 }
