@@ -526,13 +526,41 @@ public class Main extends Application {
                 applicationPages
         );
 
+        VBox descriptionSection = new VBox(
+                5,
+                new Label("Job Description"),
+                descriptionArea
+        );
+
+        VBox notesSection = new VBox(
+                5,
+                new Label("Notes"),
+                notesArea
+        );
+
+        HBox textSection = new HBox(
+                10,
+                descriptionSection,
+                notesSection
+        );
+
+        descriptionArea.setMaxWidth(Double.MAX_VALUE);
+        notesArea.setMaxWidth(Double.MAX_VALUE);
+
+        descriptionSection.prefWidthProperty()
+                .bind(textSection.widthProperty()
+                        .subtract(10)
+                        .divide(2));
+
+        notesSection.prefWidthProperty()
+                .bind(textSection.widthProperty()
+                        .subtract(10)
+                        .divide(2));
+
         VBox detailsSection = new VBox(
                 10,
                 selectedCompany,
-                new Label("Job Description"),
-                descriptionArea,
-                new Label("Notes"),
-                notesArea,
+                textSection,
                 new Label("Status History"),
                 statusHistoryGrid
         );
