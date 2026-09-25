@@ -690,12 +690,9 @@ public class Main extends Application {
 
         upcomingInterviewList.getItems().clear();
 
-        if (upcoming.isEmpty()) {
-            upcomingInterviewList.getItems().add(
-                    "No upcoming interviews in the next 7 days."
-            );
-            return;
-        }
+        upcomingInterviewList.setPlaceholder(
+                new Label("No upcoming Interviews in the next 7 days.")
+        );
 
         for (Interview interview : upcoming) {
 
