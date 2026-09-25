@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class AddApplicationView {
     private final ApplicationService service;
     private final Runnable onApplicationAdded;
+    private static Stage openStage;
 
     public AddApplicationView(ApplicationService service, Runnable onApplicationAdded) {
         this.service = service;
@@ -23,7 +24,15 @@ public class AddApplicationView {
 
     public void show() {
 
+        if (openStage != null && openStage.isShowing()) {
+            openStage.toFront();
+            openStage.requestFocus();
+            return;
+        }
+
         Stage stage = new Stage();
+
+        openStage = stage;
 
         TextField companyField = new TextField();
         companyField.setPromptText("Company");
@@ -125,6 +134,7 @@ public class AddApplicationView {
 
         stage.setTitle("Add Application");
         stage.setScene(scene);
+        stage.setOnHidden(event -> openStage = null);
         stage.show();
     }
 }
