@@ -10,7 +10,14 @@ public class Database {
     private static final String URL = "jdbc:sqlite:jobtracker.db";
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL);
+
+        Connection connection = DriverManager.getConnection(URL);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("PRAGMA foreign_keys = ON");
+        }
+
+        return connection;
     }
 
     public static void initialiseDatabase() {
@@ -59,9 +66,13 @@ public class Database {
                 Connection connection = getConnection();
                 Statement statement = connection.createStatement()
         ) {
+
             statement.execute(applicationSql);
+
             statement.execute(interviewSql);
+
             statement.execute(statusHistorySql);
+
 
             try {
                 statement.execute(
@@ -70,10 +81,21 @@ public class Database {
             } catch (SQLException ignored) {
             }
 
+            statement.execute(
+                    """
+                    DELETE FROM interviews
+                    WHERE application_id NOT IN (
+                        SELECT id FROM applications
+                    )
+                    """
+            );
+
             System.out.println("Database initialised successfully.");
 
         } catch (SQLException e) {
+
             System.err.println("Failed to initialise database.");
+
             e.printStackTrace();
         }
     }
