@@ -46,6 +46,10 @@ public class EditApplicationView {
 
         statusBox.setValue(application.getStatus());
 
+        statusBox.setPrefHeight(36);
+        statusBox.setMinHeight(36);
+        statusBox.setMaxHeight(36);
+
         TextArea descriptionArea =
                 new TextArea(application.getJobDescription());
 
@@ -116,7 +120,7 @@ public class EditApplicationView {
 
         root.getStyleClass().add("panel");
 
-        Scene scene = new Scene(root, 400, 500);
+        Scene scene = new Scene(root, 400, 650);
 
         scene.getStylesheets().add(
                 getClass().getResource("/styles.css").toExternalForm()
