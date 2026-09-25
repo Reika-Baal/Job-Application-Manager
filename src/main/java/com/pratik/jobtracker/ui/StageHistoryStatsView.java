@@ -21,6 +21,7 @@ public class StageHistoryStatsView {
         Stage stage = new Stage();
 
         Label title = new Label("Stage History Statistics");
+        title.getStyleClass().add("title");
 
         Label appliedLabel = new Label(
                 "Total Applied: " +
@@ -67,7 +68,17 @@ public class StageHistoryStatsView {
                 rejectedLabel
         );
 
+        root.getStyleClass().add("panel");
+
+        root.setPadding(
+                new javafx.geometry.Insets(16)
+        );
+
         Scene scene = new Scene(root, 350, 300);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Stage History Statistics");
         stage.setScene(scene);
