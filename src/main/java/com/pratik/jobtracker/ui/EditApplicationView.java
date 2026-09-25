@@ -114,7 +114,13 @@ public class EditApplicationView {
                 messageLabel
         );
 
+        root.getStyleClass().add("panel");
+
         Scene scene = new Scene(root, 400, 500);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Edit Application");
         stage.setScene(scene);
