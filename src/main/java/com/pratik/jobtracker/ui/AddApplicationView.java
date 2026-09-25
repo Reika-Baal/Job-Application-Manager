@@ -46,8 +46,16 @@ public class AddApplicationView {
 
         statusBox.setValue(ApplicationStatus.APPLIED);
 
+        statusBox.setPrefHeight(36);
+        statusBox.setMinHeight(36);
+        statusBox.setMaxHeight(36);
+
         TextArea descriptionArea = new TextArea();
         descriptionArea.setPromptText("Job Description");
+
+        descriptionArea.setPrefHeight(120);
+        descriptionArea.setMinHeight(120);
+        descriptionArea.setMaxHeight(120);
 
         TextArea notesArea = new TextArea();
         notesArea.setPromptText("Notes");
@@ -107,7 +115,13 @@ public class AddApplicationView {
                 messageLabel
         );
 
-        Scene scene = new Scene(root, 400, 500);
+        root.getStyleClass().add("panel");
+
+        Scene scene = new Scene(root, 400, 650);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Add Application");
         stage.setScene(scene);
