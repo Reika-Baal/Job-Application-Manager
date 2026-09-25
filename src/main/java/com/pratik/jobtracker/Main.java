@@ -137,7 +137,7 @@ public class Main extends Application {
         Pagination applicationPages = new Pagination();
         applicationPages.setMaxPageIndicatorCount(5);
 
-        table.setFixedCellSize(30);
+        table.setFixedCellSize(34);
 
         double tableHeight = 175;
 
@@ -363,6 +363,18 @@ public class Main extends Application {
             confirmation.setContentText(
                     "This action cannot be undone."
             );
+
+            confirmation.getDialogPane()
+                    .getStylesheets()
+                    .add(
+                            getClass()
+                                    .getResource("/styles.css")
+                                    .toExternalForm()
+                    );
+
+            confirmation.getDialogPane()
+                    .getStyleClass()
+                    .add("custom-dialog");
 
             confirmation.showAndWait().ifPresent(response -> {
 

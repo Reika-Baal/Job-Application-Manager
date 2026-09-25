@@ -742,3 +742,47 @@
 .chart-pie-label {
     -fx-fill: #ffffff;
 }
+
+/* ========================================
+   DIALOGS / ALERTS
+   ======================================== */
+
+.custom-dialog {
+    -fx-background-color: linear-gradient(
+            to bottom right,
+            #111a31,
+            #172441,
+            #111a30
+    );
+}
+
+.custom-dialog > *.header-panel {
+    -fx-background-color: linear-gradient(
+            to right,
+            #8f72df,
+            #bc62ce,
+            #ed4389
+    );
+}
+
+.custom-dialog > *.header-panel *.label {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.custom-dialog > *.content.label {
+    -fx-text-fill: #dce2ee;
+    -fx-font-size: 13px;
+}
+
+.custom-dialog .button {
+    -fx-background-color: #273758;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 7px 14px;
+}
+
+.custom-dialog .button:hover {
+    -fx-background-color: #324665;
+}

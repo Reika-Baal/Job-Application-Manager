@@ -175,6 +175,18 @@ public class InterviewManagementView {
                     "This action cannot be undone."
             );
 
+            confirmation.getDialogPane()
+                    .getStylesheets()
+                    .add(
+                            getClass()
+                                    .getResource("/styles.css")
+                                    .toExternalForm()
+                    );
+
+            confirmation.getDialogPane()
+                    .getStyleClass()
+                    .add("custom-dialog");
+
             confirmation.showAndWait().ifPresent(response -> {
 
                 if (response == ButtonType.OK) {
