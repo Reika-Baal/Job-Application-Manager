@@ -667,3 +667,78 @@
 .scroll-bar .decrement-button {
     -fx-background-color: transparent;
 }
+
+/* ========================================
+   APPLICATION STATISTICS
+   ======================================== */
+
+.statistics-page {
+    -fx-background-color: linear-gradient(
+            to bottom right,
+            #111a31,
+            #172441,
+            #111a30
+    );
+
+    -fx-padding: 20px;
+}
+
+.statistics-total {
+    -fx-background-color: linear-gradient(
+            to right,
+            #8f72df,
+            #bc62ce,
+            #ed4389
+    );
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 10px 16px;
+
+    -fx-background-radius: 10px;
+}
+
+
+/* Pie chart */
+
+.chart {
+    -fx-background-color: transparent;
+}
+
+.chart-title {
+    -fx-text-fill: #ffffff;
+
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.chart-content {
+    -fx-background-color: transparent;
+}
+
+
+/* Pie chart legend */
+
+.chart-legend {
+    -fx-background-color: transparent;
+
+    -fx-padding: 10px;
+}
+
+.chart-legend-item {
+    -fx-text-fill: #dce2ee;
+}
+
+.chart-legend-item-symbol {
+    -fx-background-radius: 4px;
+}
+
+
+/* Pie chart labels */
+
+.chart-pie-label {
+    -fx-fill: #ffffff;
+}
