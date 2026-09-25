@@ -87,6 +87,8 @@ public class InterviewManagementView {
         Button editButton = new Button("Edit Interview");
         Button deleteButton = new Button("Delete Interview");
 
+        deleteButton.getStyleClass().add("danger-button");
+
         editButton.setDisable(true);
         deleteButton.setDisable(true);
 
@@ -104,6 +106,10 @@ public class InterviewManagementView {
         notesArea.setEditable(false);
         notesArea.setWrapText(true);
         notesArea.setPromptText("Interview notes");
+
+        notesArea.setPrefHeight(70);
+        notesArea.setMinHeight(70);
+        notesArea.setMaxHeight(70);
 
         addButton.setOnAction(event -> {
 
@@ -205,7 +211,13 @@ public class InterviewManagementView {
                 notesArea
         );
 
+        root.getStyleClass().add("panel");
+
         Scene scene = new Scene(root, 700, 500);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Interview Management");
         stage.setScene(scene);

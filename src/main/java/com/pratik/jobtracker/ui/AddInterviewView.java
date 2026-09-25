@@ -73,7 +73,9 @@ public class AddInterviewView {
         notesArea.setPromptText("Interview Notes");
 
         notesArea.setWrapText(true);
-        notesArea.setPrefRowCount(3);
+        notesArea.setPrefHeight(70);
+        notesArea.setMinHeight(70);
+        notesArea.setMaxHeight(70);
 
         Button saveButton = new Button("Save Interview");
 
@@ -128,7 +130,13 @@ public class AddInterviewView {
                 messageLabel
         );
 
-        Scene scene = new Scene(root, 400, 550);
+        root.getStyleClass().add("panel");
+
+        Scene scene = new Scene(root, 400, 500);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Add Interview");
         stage.setScene(scene);

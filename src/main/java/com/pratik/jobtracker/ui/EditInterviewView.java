@@ -73,6 +73,11 @@ public class EditInterviewView {
         TextArea notesArea =
                 new TextArea(interview.getNotes());
 
+        notesArea.setWrapText(true);
+        notesArea.setPrefHeight(70);
+        notesArea.setMinHeight(70);
+        notesArea.setMaxHeight(70);
+
         Button saveButton = new Button("Save Changes");
 
         Label messageLabel = new Label();
@@ -127,7 +132,13 @@ public class EditInterviewView {
                 messageLabel
         );
 
-        Scene scene = new Scene(root, 400, 550);
+        root.getStyleClass().add("panel");
+
+        Scene scene = new Scene(root, 400, 500);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Edit Interview");
         stage.setScene(scene);
