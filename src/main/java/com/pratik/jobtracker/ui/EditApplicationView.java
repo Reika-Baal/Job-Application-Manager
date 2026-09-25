@@ -15,6 +15,7 @@ public class EditApplicationView {
     private final ApplicationService service;
     private final JobApplication application;
     private final Runnable onApplicationUpdated;
+    private static Stage openStage;
 
     public EditApplicationView(
             ApplicationService service,
@@ -28,7 +29,15 @@ public class EditApplicationView {
 
     public void show() {
 
+        if (openStage != null && openStage.isShowing()) {
+            openStage.toFront();
+            openStage.requestFocus();
+            return;
+        }
+
         Stage stage = new Stage();
+
+        openStage = stage;
 
         TextField companyField = new TextField(application.getCompany());
         TextField roleField = new TextField(application.getRole());
@@ -128,6 +137,7 @@ public class EditApplicationView {
 
         stage.setTitle("Edit Application");
         stage.setScene(scene);
+        stage.setOnHidden(event -> openStage = null);
         stage.show();
     }
 }

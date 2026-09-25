@@ -17,6 +17,7 @@ public class InterviewManagementView {
     private final JobApplication application;
     private final InterviewService interviewService;
     private final Runnable onInterviewsChanged;
+    private static Stage openStage;
 
     private final ObservableList<Interview> interviews =
             FXCollections.observableArrayList();
@@ -32,7 +33,15 @@ public class InterviewManagementView {
 
     public void show() {
 
+        if (openStage != null && openStage.isShowing()) {
+            openStage.toFront();
+            openStage.requestFocus();
+            return;
+        }
+
         Stage stage = new Stage();
+
+        openStage = stage;
 
         Label title = new Label(
                 "Interviews - " +
@@ -221,6 +230,7 @@ public class InterviewManagementView {
 
         stage.setTitle("Interview Management");
         stage.setScene(scene);
+        stage.setOnHidden(event -> openStage = null);
         stage.show();
     }
 

@@ -17,6 +17,7 @@ public class EditInterviewView {
     private final Interview interview;
     private final InterviewService interviewService;
     private final Runnable onInterviewUpdated;
+    private static Stage openStage;
 
     public EditInterviewView(
             Interview interview,
@@ -30,7 +31,15 @@ public class EditInterviewView {
 
     public void show() {
 
+        if (openStage != null && openStage.isShowing()) {
+            openStage.toFront();
+            openStage.requestFocus();
+            return;
+        }
+
         Stage stage = new Stage();
+
+        openStage = stage;
 
         LocalDateTime currentDateTime = interview.getInterviewDateTime();
 
@@ -142,6 +151,7 @@ public class EditInterviewView {
 
         stage.setTitle("Edit Interview");
         stage.setScene(scene);
+        stage.setOnHidden(event -> openStage = null);
         stage.show();
     }
 }

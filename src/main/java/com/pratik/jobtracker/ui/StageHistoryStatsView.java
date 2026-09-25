@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class StageHistoryStatsView {
 
     private final ApplicationService service;
+    private static Stage openStage;
 
     public StageHistoryStatsView(ApplicationService service) {
         this.service = service;
@@ -23,7 +24,15 @@ public class StageHistoryStatsView {
 
     public void show() {
 
+        if (openStage != null && openStage.isShowing()) {
+            openStage.toFront();
+            openStage.requestFocus();
+            return;
+        }
+
         Stage stage = new Stage();
+
+        openStage = stage;
 
         int totalApplications = service.getTotalApplications();
 
@@ -225,9 +234,8 @@ public class StageHistoryStatsView {
 
 
         stage.setTitle("Application Statistics");
-
         stage.setScene(scene);
-
+        stage.setOnHidden(event -> openStage = null);
         stage.show();
     }
 }
