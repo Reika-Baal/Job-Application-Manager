@@ -52,6 +52,7 @@ public class JobApplicationSNL {
         String sql = """
                 SELECT *
                 FROM applications
+                WHERE deleted = 0
                 ORDER BY application_date DESC
                 """;
 
@@ -123,6 +124,7 @@ public class JobApplicationSNL {
                 SELECT *
                 FROM applications
                 WHERE id = ?
+                    AND deleted = 0
                 """;
 
         try (
@@ -156,21 +158,27 @@ public class JobApplicationSNL {
         return  null;
     }
     public boolean delete(int id) {
+
         String sql = """
-                DELETE FROM applications
+                UPDATE applications
+                SET deleted = 1
                 WHERE id = ?
                 """;
 
         try (
                 Connection connection = Database.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
-            statement.setInt(1,id);
 
-            return statement.executeUpdate() >0;
+            statement.setInt(1, id);
+
+            return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }

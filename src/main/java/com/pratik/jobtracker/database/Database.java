@@ -61,15 +61,16 @@ public class Database {
 
         String applicationSql = """
                 CREATE TABLE IF NOT EXISTS applications (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    company TEXT NOT NULL,
-                    role TEXT NOT NULL,
-                    salary REAL,
-                    location TEXT,
-                    application_date TEXT,
-                    status TEXT NOT NULL,
-                    job_description TEXT,
-                    notes TEXT
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        company TEXT NOT NULL,
+                        role TEXT NOT NULL,
+                        salary REAL,
+                        location TEXT,
+                        application_date TEXT,
+                        status TEXT NOT NULL,
+                        job_description TEXT,
+                        notes TEXT,
+                        deleted INTEGER NOT NULL DEFAULT 0
                 )
                 """;
 
@@ -129,6 +130,9 @@ public class Database {
                     """
             );
 
+            statement.execute(
+                    "ALTER TABLE applications ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0"
+            );
 
             System.out.println(
                     "Database initialised successfully."

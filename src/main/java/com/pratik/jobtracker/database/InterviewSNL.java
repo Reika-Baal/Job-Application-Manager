@@ -170,4 +170,31 @@ public class InterviewSNL {
 
         return interviews;
     }
+
+    public boolean deleteByApplicationId(int applicationId) {
+
+        String sql = """
+            DELETE FROM interviews
+            WHERE application_id = ?
+            """;
+
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.setInt(1, applicationId);
+
+            statement.executeUpdate();
+
+            return true;
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+            return false;
+        }
+    }
 }

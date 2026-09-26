@@ -1,6 +1,7 @@
 package com.pratik.jobtracker.service;
 
 import com.pratik.jobtracker.database.ApplicationStatusHistorySNL;
+import com.pratik.jobtracker.database.InterviewSNL;
 import com.pratik.jobtracker.database.JobApplicationSNL;
 
 import com.pratik.jobtracker.model.JobApplication;
@@ -14,10 +15,12 @@ public class ApplicationService {
 
     private final JobApplicationSNL snl;
     private final ApplicationStatusHistorySNL statusHistorySnl;
+    private final InterviewSNL interviewSnl;
 
     public ApplicationService() {
         this.snl = new JobApplicationSNL();
         this.statusHistorySnl = new ApplicationStatusHistorySNL();
+        this.interviewSnl = new InterviewSNL();
     }
 
     public void addApplication(JobApplication application) {
@@ -87,6 +90,8 @@ public class ApplicationService {
         if (id <= 0) {
             throw new IllegalArgumentException("Application ID is invalid.");
         }
+
+        interviewSnl.deleteByApplicationId(id);
 
         return snl.delete(id);
     }
