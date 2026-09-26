@@ -1,5 +1,9 @@
 package com.pratik.jobtracker.database;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,18 +11,51 @@ import java.sql.Statement;
 
 public class Database {
 
-    private static final String URL = "jdbc:sqlite:jobtracker.db";
+    private static final String APP_FOLDER = "JobApplicationManager";
+
+    private static final Path DATABASE_DIRECTORY =
+            Paths.get(
+                    System.getenv("APPDATA"),
+                    APP_FOLDER
+            );
+
+    private static final Path DATABASE_PATH =
+            DATABASE_DIRECTORY.resolve(
+                    "jobtracker.db"
+            );
+
+    private static final String URL =
+            "jdbc:sqlite:" + DATABASE_PATH;
+
 
     public static Connection getConnection() throws SQLException {
 
-        Connection connection = DriverManager.getConnection(URL);
+        try {
+            Files.createDirectories(
+                    DATABASE_DIRECTORY
+            );
+        } catch (Exception e) {
+            throw new SQLException(
+                    "Could not create application data directory.",
+                    e
+            );
+        }
 
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("PRAGMA foreign_keys = ON");
+        Connection connection =
+                DriverManager.getConnection(URL);
+
+        try (
+                Statement statement =
+                        connection.createStatement()
+        ) {
+            statement.execute(
+                    "PRAGMA foreign_keys = ON"
+            );
         }
 
         return connection;
     }
+
 
     public static void initialiseDatabase() {
 
@@ -64,7 +101,8 @@ public class Database {
 
         try (
                 Connection connection = getConnection();
-                Statement statement = connection.createStatement()
+                Statement statement =
+                        connection.createStatement()
         ) {
 
             statement.execute(applicationSql);
@@ -81,6 +119,7 @@ public class Database {
             } catch (SQLException ignored) {
             }
 
+
             statement.execute(
                     """
                     DELETE FROM interviews
@@ -90,11 +129,16 @@ public class Database {
                     """
             );
 
-            System.out.println("Database initialised successfully.");
+
+            System.out.println(
+                    "Database initialised successfully."
+            );
 
         } catch (SQLException e) {
 
-            System.err.println("Failed to initialise database.");
+            System.err.println(
+                    "Failed to initialise database."
+            );
 
             e.printStackTrace();
         }
