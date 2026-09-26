@@ -130,9 +130,12 @@ public class Database {
                     """
             );
 
-            statement.execute(
-                    "ALTER TABLE applications ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0"
-            );
+            try {
+                statement.execute(
+                        "ALTER TABLE applications ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0"
+                );
+            } catch (SQLException ignored) {
+            }
 
             System.out.println(
                     "Database initialised successfully."
