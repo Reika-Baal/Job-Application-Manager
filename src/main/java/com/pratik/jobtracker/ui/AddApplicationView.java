@@ -7,6 +7,7 @@ import com.pratik.jobtracker.service.ApplicationService;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -42,6 +43,27 @@ public class AddApplicationView {
 
         TextField salaryField = new TextField();
         salaryField.setPromptText("Salary");
+
+        Label poundLabel = new Label("£");
+
+        poundLabel.getStyleClass().add("currency-symbol");
+
+        HBox salaryBox = new HBox(
+                2,
+                poundLabel,
+                salaryField
+        );
+
+        salaryBox.getStyleClass().add("currency-field");
+
+        salaryBox.setAlignment(
+                javafx.geometry.Pos.CENTER_LEFT
+        );
+
+        HBox.setHgrow(
+                salaryField,
+                javafx.scene.layout.Priority.ALWAYS
+        );
 
         TextField locationField = new TextField();
         locationField.setPromptText("Location");
@@ -112,7 +134,7 @@ public class AddApplicationView {
                 new Label("Add Application"),
                 companyField,
                 roleField,
-                salaryField,
+                salaryBox,
                 locationField,
                 datePicker,
                 statusBox,

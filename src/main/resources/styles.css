@@ -786,3 +786,36 @@
 .custom-dialog .button:hover {
     -fx-background-color: #324665;
 }
+.currency-field {
+    -fx-background-color: #17223b;
+    -fx-border-color: #354564;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+
+    -fx-padding: 0 10px;
+
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
+}
+
+.currency-symbol {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+}
+
+.currency-field .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+
+    -fx-padding: 0;
+
+    -fx-text-fill: #ffffff;
+}
+
+.currency-field .text-field:focused {
+    -fx-border-color: transparent;
+}
